@@ -1,3 +1,4 @@
-- [ ] create Theme
+- [x] create Theme
+- [x] add react-toastify
 - [ ] create Appbar
 - [ ] appbar should have home, services, tools, about us and finally book appointment button
