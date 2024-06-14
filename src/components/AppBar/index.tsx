@@ -6,13 +6,23 @@ import {
   AppBar as MuiAppBar,
   Toolbar
 } from "@mui/material"
-
-import styles from "./style.module.scss"
 import { Menu as MenuIcon } from "@mui/icons-material"
+import { useDispatch, useSelector } from "react-redux"
+import { Dispatch } from "../../store"
+import { toggleDrawer } from "../../store/drawer/action"
+import styles from "./style.module.scss"
+import { State } from "../../store/rootReducer"
+import { TemporaryDrawer } from "../TemporaryDrawer"
 
 export const AppBar = () => {
+  const dispatch: Dispatch = useDispatch()
+  const drawerState = useSelector((state: State) => state.drawer)
+
   return (
     <MuiAppBar position="fixed" className={styles.AppBar}>
+      {/*on small screens show side bar only when menu icon is clicked*/}
+      {drawerState.isOpen && <TemporaryDrawer />}
+
       <Toolbar className={styles.toolbar}>
         <IconButton
           size="large"
@@ -22,6 +32,9 @@ export const AppBar = () => {
             display: {
               md: "none"
             }
+          }}
+          onClick={() => {
+            dispatch(toggleDrawer(true))
           }}
         >
           <MenuIcon />
