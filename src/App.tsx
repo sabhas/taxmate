@@ -1,9 +1,9 @@
-import { AppBar } from "./components/AppBar"
+import { Header } from "./components/Header"
 
 function App() {
   return (
     <>
-      <AppBar />
+      <Header />
     </>
   )
 }

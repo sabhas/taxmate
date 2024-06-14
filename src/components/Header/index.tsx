@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  IconButton,
-  Link,
-  AppBar as MuiAppBar,
-  Toolbar
-} from "@mui/material"
+import { Box, Button, IconButton, Link, AppBar, Toolbar } from "@mui/material"
 import { Menu as MenuIcon } from "@mui/icons-material"
 import { useDispatch, useSelector } from "react-redux"
 import { Dispatch } from "../../store"
@@ -14,12 +7,12 @@ import styles from "./style.module.scss"
 import { State } from "../../store/rootReducer"
 import { TemporaryDrawer } from "../TemporaryDrawer"
 
-export const AppBar = () => {
+export const Header = () => {
   const dispatch: Dispatch = useDispatch()
   const drawerState = useSelector((state: State) => state.drawer)
 
   return (
-    <MuiAppBar position="fixed" className={styles.AppBar}>
+    <AppBar position="fixed" className={styles.AppBar}>
       {/*on small screens show side bar only when menu icon is clicked*/}
       {drawerState.isOpen && <TemporaryDrawer />}
 
@@ -71,6 +64,6 @@ export const AppBar = () => {
           <Button variant="contained">Book Appointment</Button>
         </Box>
       </Toolbar>
-    </MuiAppBar>
+    </AppBar>
   )
 }

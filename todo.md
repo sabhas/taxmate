@@ -1,6 +1,6 @@
 - [x] create Theme
 - [x] add react-toastify
 - [x] create Appbar
-- [ ] rename appbar to header
+- [x] rename appbar to header
 - [x] appbar should have home, services, tools, about us and finally book appointment button
 - [x] create temporary drawer for mobile view
