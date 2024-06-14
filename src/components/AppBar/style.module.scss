@@ -1,0 +1,33 @@
+
+.AppBar {
+    background-color: var(--mui-palette-common-background) !important;
+  z-index: 1400 !important;
+  height: 60px;
+  flex-direction: row !important;
+  align-items: center;
+
+  .toolbar {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+  }
+
+  .logoWrapper {
+    height: 50px;
+    width: 155px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    img {
+      max-height: 100%;
+      max-width: 150px;
+    }
+  }
+
+  .rightSideBox {
+    flex-grow: 1;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
