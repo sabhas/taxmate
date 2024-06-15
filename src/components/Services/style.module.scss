@@ -12,6 +12,16 @@
     &:hover {
       transform: translateY(-10px);
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      background-image: linear-gradient(
+        to right,
+        #4caf50,
+        #2196f3
+      ); // Example gradient based on logo colors
+      color: #fff;
+
+      .description {
+        color: #fff;
+      }
     }
 
     .icon {
@@ -36,6 +46,7 @@
     .description {
       margin-top: 15px;
       color: var(--mui-palette-text-secondary);
+      transition: color 0.3s;
     }
   }
 }
