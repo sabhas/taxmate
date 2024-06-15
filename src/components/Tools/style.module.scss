@@ -2,21 +2,18 @@
   padding: 20px;
   background-color: #f7f7f7;
 
-  .serviceBox {
+  .toolBox {
     padding: 30px 20px;
     text-align: center;
     background-color: #fff;
     border-radius: 8px;
     transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
 
     &:hover {
       transform: translateY(-10px);
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      background-image: linear-gradient(
-        to right,
-        #4caf50,
-        #2196f3
-      ); // Example gradient based on logo colors
+      background-image: linear-gradient(to right, #4caf50, #2196f3);
       color: #fff;
 
       .description {
