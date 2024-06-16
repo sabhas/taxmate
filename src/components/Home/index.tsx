@@ -26,7 +26,7 @@ export const Home = () => {
         }}
       >
         <img
-          src="/image-1.jpg"
+          src="./image-1.jpg"
           alt="Tax consultancy"
           className={styles.image}
         />
