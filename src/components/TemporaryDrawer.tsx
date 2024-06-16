@@ -1,4 +1,4 @@
-import { Drawer, Link, List, ListItemButton, ListItemText } from "@mui/material"
+import { Drawer, Link, List, ListItemButton } from "@mui/material"
 import { useDispatch, useSelector } from "react-redux"
 import { Dispatch } from "../store"
 import { toggleDrawer } from "../store/drawer/action"
