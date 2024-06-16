@@ -1,0 +1,50 @@
+.container {
+  padding: 20px;
+  background-color: #f7f7f7;
+
+  .slider {
+    gap: 15px;
+
+    .feedbackBox {
+      padding: 20px;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      background-image: linear-gradient(
+        to right,
+        #4caf50,
+        #2196f3
+      ); // Example gradient based on logo colors
+      color: #fff;
+
+      img {
+        border-radius: 50%;
+        margin-bottom: 15px;
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+      }
+
+      .customerName {
+        margin-top: 10px;
+        font-weight: bold;
+        font-size: 1.2em;
+      }
+
+      .customerRole {
+        margin-top: 5px;
+        color: #fff;
+        font-size: 0.9em;
+      }
+
+      .feedback {
+        text-align: center;
+        margin-top: 15px;
+        font-size: 0.9em;
+        color: #fff;
+      }
+    }
+  }
+}
