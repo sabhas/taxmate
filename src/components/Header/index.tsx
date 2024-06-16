@@ -34,7 +34,7 @@ export const Header = () => {
         </IconButton>
 
         <Box className={styles.logoWrapper}>
-          <img src="/logo.png" alt="Logo" />
+          <img src="./logo.png" alt="Logo" />
         </Box>
 
         <Box
