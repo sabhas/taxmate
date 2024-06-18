@@ -1,10 +1,9 @@
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet"
-import { useRef } from "react"
 import emailjs from "@emailjs/browser"
-import styles from "./style.module.scss"
-import { toast } from "react-toastify"
 import { Box, Button, TextField, Typography } from "@mui/material"
-import "leaflet/dist/leaflet.css"
+import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api"
+import { useCallback, useRef, useState } from "react"
+import { toast } from "react-toastify"
+import styles from "./style.module.scss"
 
 export const ContactUs = () => {
   const form = useRef<HTMLFormElement | null>(null)
@@ -15,10 +14,10 @@ export const ContactUs = () => {
     if (form.current)
       emailjs
         .sendForm(
-          process.env.REACT_APP_EMAIL_SERVICE_ID as string,
-          process.env.REACT_APP_EMAIL_TEMPLATE_ID as string,
+          import.meta.env.VITE_APP_EMAIL_SERVICE_ID as string,
+          import.meta.env.VITE_APP_EMAIL_TEMPLATE_ID as string,
           form.current,
-          process.env.REACT_APP_EMAIL_ACCOUNT_ID as string
+          import.meta.env.VITE_APP_EMAIL_ACCOUNT_ID as string
         )
         .then(() => {
           toast.success("Message successfully sent!")
@@ -69,7 +68,6 @@ export const ContactUs = () => {
             fullWidth
             required
             margin="normal"
-            type="email"
           />
           <TextField
             label="Message"
@@ -84,30 +82,54 @@ export const ContactUs = () => {
             Send Message
           </Button>
         </Box>
-        <Box className={styles.mapWrapper}>
-          <MapContainer
-            center={[31.62284081866109, 71.05924573734055]}
-            zoom={13}
-            style={{ height: "100%", width: "100%" }}
-          >
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            />
-            <Marker position={[31.62284081866109, 71.05924573734055]}>
-              <Popup>
-                Taxmate,
-                <br />
-                Pakistan,
-                <br />
-                Punjab, Bhakkar <br />
-                <br />
-                <span>support@taxmate.pk</span>
-              </Popup>
-            </Marker>
-          </MapContainer>
-        </Box>
+        <Map />
       </Box>
     </Box>
+  )
+}
+
+const containerStyle = {
+  width: "100%",
+  height: "485px",
+  flex: 1
+}
+
+const taxmateCord = {
+  lat: 31.622685,
+  lng: 71.059266
+}
+
+const Map = () => {
+  const { isLoaded } = useJsApiLoader({
+    id: "google-map-script",
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAP_API_KEY
+  })
+
+  const [map, setMap] = useState<google.maps.Map | null>(null)
+
+  const onLoad = useCallback((map: google.maps.Map) => {
+    // This is just an example of getting and using the map instance!!! don't just blindly copy!
+    const bounds = new window.google.maps.LatLngBounds(taxmateCord)
+    map.fitBounds(bounds)
+
+    setMap(map)
+  }, [])
+
+  const onUnmount = useCallback(() => {
+    setMap(null)
+  }, [])
+
+  if (!isLoaded) return null
+
+  return (
+    <GoogleMap
+      mapContainerStyle={containerStyle}
+      center={taxmateCord}
+      zoom={14}
+      onLoad={onLoad}
+      onUnmount={onUnmount}
+    >
+      <Marker position={taxmateCord} />
+    </GoogleMap>
   )
 }
