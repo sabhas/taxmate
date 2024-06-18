@@ -1,4 +1,5 @@
 import { AboutUs } from "./components/AboutUs"
+import { ContactUs } from "./components/ContactUs"
 import { Feedback } from "./components/Feedback"
 import { Header } from "./components/Header"
 import { Home } from "./components/Home"
@@ -15,6 +16,7 @@ function App() {
         <Tools />
         <AboutUs />
         <Feedback />
+        <ContactUs />
       </main>
     </>
   )
