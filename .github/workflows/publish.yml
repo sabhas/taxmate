@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+env:
+  VITE_GOOGLE_MAP_API_KEY: ${{ secrets.VITE_GOOGLE_MAP_API_KEY }}
+
 jobs:
   create_build_and_publish:
     runs-on: ubuntu-latest

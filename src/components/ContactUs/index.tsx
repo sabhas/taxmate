@@ -105,7 +105,7 @@ const Map = () => {
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAP_API_KEY
   })
 
-  const [map, setMap] = useState<google.maps.Map | null>(null)
+  const [_, setMap] = useState<google.maps.Map | null>(null)
 
   const onLoad = useCallback((map: google.maps.Map) => {
     // This is just an example of getting and using the map instance!!! don't just blindly copy!
