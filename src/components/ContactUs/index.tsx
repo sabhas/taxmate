@@ -9,15 +9,9 @@ import styles from "./style.module.scss"
 export const ContactUs = () => {
   const form = useRef<HTMLFormElement | null>(null)
   const [isSendingEmail, setIsSendingEmail] = useState(false)
-  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null)
 
   const sendEmail = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
-    if (!recaptchaToken) {
-      toast.error("Please complete the reCAPTCHA")
-      return
-    }
 
     if (form.current) {
       setIsSendingEmail(true)
@@ -31,10 +25,9 @@ export const ContactUs = () => {
         .then(() => {
           toast.success("Message successfully sent!")
           form.current?.reset()
-          setRecaptchaToken(null)
         })
         .catch((err) => {
-          console.log(`Error occurred in sending email: ${err}`)
+          console.log(`Error occurred in sending email`, err)
           toast.error("Failed to send the message")
         })
         .finally(() => {
@@ -60,6 +53,8 @@ export const ContactUs = () => {
         <Box
           ref={form}
           component="form"
+          method="post"
+          action=""
           onSubmit={sendEmail}
           className={styles.contactForm}
         >
