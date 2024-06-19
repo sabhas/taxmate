@@ -44,6 +44,7 @@ export const ContactUs = () => {
       <Box
         sx={{
           display: "flex",
+          gap: "10px",
           flexDirection: {
             xs: "column",
             md: "row"
@@ -114,7 +115,7 @@ export const ContactUs = () => {
 
 const containerStyle = {
   width: "100%",
-  height: "485px",
+  minHeight: "485px",
   flex: 1
 }
 
