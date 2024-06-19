@@ -5,13 +5,20 @@ import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api"
 import { useCallback, useRef, useState } from "react"
 import { toast } from "react-toastify"
 import styles from "./style.module.scss"
+import { Recaptcha } from "../Recaptcha"
 
 export const ContactUs = () => {
   const form = useRef<HTMLFormElement | null>(null)
   const [isSendingEmail, setIsSendingEmail] = useState(false)
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null)
 
   const sendEmail = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
+    if (!recaptchaToken) {
+      toast.error("Please complete the reCAPTCHA")
+      return
+    }
 
     if (form.current) {
       setIsSendingEmail(true)
@@ -25,6 +32,7 @@ export const ContactUs = () => {
         .then(() => {
           toast.success("Message successfully sent!")
           form.current?.reset()
+          setRecaptchaToken(null)
         })
         .catch((err) => {
           console.log(`Error occurred in sending email: ${err}`)
@@ -91,6 +99,7 @@ export const ContactUs = () => {
             multiline
             rows={4}
           />
+          <Recaptcha onChange={setRecaptchaToken} />
           <LoadingButton
             type="submit"
             variant="contained"
