@@ -5,7 +5,6 @@ import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api"
 import { useCallback, useRef, useState } from "react"
 import { toast } from "react-toastify"
 import styles from "./style.module.scss"
-import { Recaptcha } from "../Recaptcha"
 
 export const ContactUs = () => {
   const form = useRef<HTMLFormElement | null>(null)
@@ -99,7 +98,10 @@ export const ContactUs = () => {
             multiline
             rows={4}
           />
-          <Recaptcha onChange={setRecaptchaToken} />
+          <div
+            className="g-recaptcha"
+            data-sitekey="6LfhbvwpAAAAABfVn96TUjhxw9wMfdDIXxw8SbEw"
+          ></div>
           <LoadingButton
             type="submit"
             variant="contained"
