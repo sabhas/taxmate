@@ -4,14 +4,17 @@ import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api"
 import { useCallback, useRef, useState } from "react"
 import { toast } from "react-toastify"
 import styles from "./style.module.scss"
+import { LoadingButton } from "@mui/lab"
 
 export const ContactUs = () => {
   const form = useRef<HTMLFormElement | null>(null)
+  const [isSendingEmail, setIsSendingEmail] = useState(false)
 
   const sendEmail = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    if (form.current)
+    if (form.current) {
+      setIsSendingEmail(true)
       emailjs
         .sendForm(
           import.meta.env.VITE_APP_EMAIL_SERVICE_ID as string,
@@ -21,11 +24,16 @@ export const ContactUs = () => {
         )
         .then(() => {
           toast.success("Message successfully sent!")
+          form.current?.reset()
         })
         .catch((err) => {
           console.log(`Error occurred in sending email: ${err}`)
           toast.error("Failed to send the message")
         })
+        .finally(() => {
+          setIsSendingEmail(false)
+        })
+    }
   }
 
   return (
@@ -43,12 +51,14 @@ export const ContactUs = () => {
         }}
       >
         <Box
+          ref={form}
           component="form"
           onSubmit={sendEmail}
           className={styles.contactForm}
         >
           <TextField
             label="Name"
+            name="name"
             variant="outlined"
             fullWidth
             required
@@ -56,6 +66,7 @@ export const ContactUs = () => {
           />
           <TextField
             label="Email"
+            name="reply_to"
             variant="outlined"
             fullWidth
             required
@@ -64,6 +75,7 @@ export const ContactUs = () => {
           />
           <TextField
             label="Phone"
+            name="phone"
             variant="outlined"
             fullWidth
             required
@@ -71,6 +83,7 @@ export const ContactUs = () => {
           />
           <TextField
             label="Message"
+            name="message"
             variant="outlined"
             fullWidth
             required
@@ -78,9 +91,14 @@ export const ContactUs = () => {
             multiline
             rows={4}
           />
-          <Button type="submit" variant="contained" color="primary">
+          <LoadingButton
+            type="submit"
+            variant="contained"
+            color="primary"
+            loading={isSendingEmail}
+          >
             Send Message
-          </Button>
+          </LoadingButton>
         </Box>
         <Map />
       </Box>
