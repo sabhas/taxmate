@@ -1,7 +1,7 @@
 import Carousel from "react-multi-carousel"
 import "react-multi-carousel/lib/styles.css"
 import { Box, Typography } from "@mui/material"
-import styles from "./style.module.scss"
+import styles from "../style.module.scss"
 
 const feedbacks = [
   {
@@ -51,7 +51,7 @@ const feedbacks = [
 
 export const Feedback = () => {
   return (
-    <Box className={styles.container}>
+    <Box className={styles.feedbackContainer}>
       <Typography variant="h4" align="center" gutterBottom>
         Customers Feedback
       </Typography>

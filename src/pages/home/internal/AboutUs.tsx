@@ -1,5 +1,5 @@
 import { Box, Typography, Grid, Paper } from "@mui/material"
-import styles from "./style.module.scss"
+import styles from "../style.module.scss"
 
 const members = [
   {

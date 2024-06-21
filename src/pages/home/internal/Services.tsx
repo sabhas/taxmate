@@ -5,7 +5,7 @@ import {
   Gavel
 } from "@mui/icons-material"
 import { Avatar, Box, Grid, Paper, Typography } from "@mui/material"
-import styles from "./style.module.scss"
+import styles from "../style.module.scss"
 
 const services = [
   {
@@ -36,7 +36,7 @@ const services = [
 
 export const Services = () => {
   return (
-    <Box className={styles.container}>
+    <Box className={styles.servicesContainer}>
       <Typography variant="h4" align="center" gutterBottom>
         Our Services
       </Typography>

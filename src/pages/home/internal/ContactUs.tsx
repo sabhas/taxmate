@@ -4,7 +4,7 @@ import { Box, TextField, Typography } from "@mui/material"
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api"
 import { useCallback, useRef, useState } from "react"
 import { toast } from "react-toastify"
-import styles from "./style.module.scss"
+import styles from "../style.module.scss"
 
 export const ContactUs = () => {
   const form = useRef<HTMLFormElement | null>(null)

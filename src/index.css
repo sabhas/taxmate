@@ -30,8 +30,9 @@ body {
   min-height: 100vh;
 }
 
-main {
+.main {
   padding-top: 60px;
+  position: relative;
 }
 
 h1 {

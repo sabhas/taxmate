@@ -2,7 +2,7 @@ import { Box, Typography, Grid, Paper, Avatar } from "@mui/material"
 import CalculatorIcon from "@mui/icons-material/Calculate"
 import NtnStatusIcon from "@mui/icons-material/AssignmentInd"
 import AtlStatusIcon from "@mui/icons-material/Assignment"
-import styles from "./style.module.scss"
+import styles from "../style.module.scss"
 
 const tools = [
   {
@@ -26,7 +26,7 @@ const tools = [
 
 export const Tools = () => {
   return (
-    <Box className={styles.container}>
+    <Box className={styles.toolsContainer}>
       <Typography variant="h4" align="center" gutterBottom>
         Tools
       </Typography>

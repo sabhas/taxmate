@@ -1,29 +1,15 @@
-import { AboutUs } from "./components/AboutUs"
-import { ContactUs } from "./components/ContactUs"
-import { Feedback } from "./components/Feedback"
-import { WhatsAppFloatingButton } from "./components/FloatingWhatsappButton"
-import { Header } from "./components/Header"
-import { Home } from "./components/Home"
-import { Services } from "./components/Services"
-import { Tools } from "./components/Tools"
+import { Navigate, Route, Routes } from "react-router-dom"
+import { MainLayout } from "./layout/Main"
+import { HomePage } from "./pages/home"
 
 function App() {
   return (
-    <>
-      <Header />
-      <main>
-        <Home />
-        <Services />
-        <Tools />
-        <AboutUs />
-        <Feedback />
-        <ContactUs />
-        <WhatsAppFloatingButton
-          phoneNumber="+923336844170"
-          message="I'd like to get some help regarding tax matter"
-        />
-      </main>
-    </>
+    <Routes>
+      <Route element={<MainLayout />}>
+        <Route path="/home" element={<HomePage />} />
+        <Route path="*" element={<Navigate to="/home" />} />
+      </Route>
+    </Routes>
   )
 }
 

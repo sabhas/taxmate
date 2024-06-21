@@ -12,14 +12,17 @@ import App from "./App.tsx"
 import "./index.css"
 import store from "./store"
 import { theme } from "./theme"
+import { HashRouter } from "react-router-dom"
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <CssVarsProvider theme={theme}>
-      <Provider store={store}>
-        <App />
-        <ToastContainer />
-      </Provider>
+      <HashRouter>
+        <Provider store={store}>
+          <App />
+          <ToastContainer />
+        </Provider>
+      </HashRouter>
     </CssVarsProvider>
   </React.StrictMode>
 )

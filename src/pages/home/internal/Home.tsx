@@ -1,9 +1,9 @@
 import { Box, Typography } from "@mui/material"
-import styles from "./style.module.scss"
+import styles from "../style.module.scss"
 
 export const Home = () => {
   return (
-    <Box className={styles.container}>
+    <Box className={styles.homeContainer}>
       <Box className={styles.content}>
         <Typography variant="h3">Welcome to Taxmate</Typography>
         <Typography variant="h5">

@@ -4,3 +4,9 @@
 - [x] rename appbar to header
 - [x] appbar should have home, services, tools, about us and finally book appointment button
 - [x] create temporary drawer for mobile view
+- [ ] create a home page
+- [ ] improve image loading
+- [ ] create pages for tools
+- [ ] Change book appointment to contact
+- [ ] on clicking contact in appbar navigate to contact section of home page
+- [ ] add footer
