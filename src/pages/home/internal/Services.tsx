@@ -36,7 +36,7 @@ const services = [
 
 export const Services = () => {
   return (
-    <Box className={styles.servicesContainer}>
+    <Box className={styles.servicesContainer} id="services">
       <Typography variant="h4" align="center" gutterBottom>
         Our Services
       </Typography>

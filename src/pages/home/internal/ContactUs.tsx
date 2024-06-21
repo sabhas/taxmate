@@ -37,7 +37,7 @@ export const ContactUs = () => {
   }
 
   return (
-    <Box className={styles.contactUsContainer}>
+    <Box className={styles.contactUsContainer} id="contactUs">
       <Typography variant="h4" align="center" gutterBottom>
         Contact Us
       </Typography>

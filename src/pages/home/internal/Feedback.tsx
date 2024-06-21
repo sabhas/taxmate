@@ -51,7 +51,7 @@ const feedbacks = [
 
 export const Feedback = () => {
   return (
-    <Box className={styles.feedbackContainer}>
+    <Box className={styles.feedbackContainer} id="feedback">
       <Typography variant="h4" align="center" gutterBottom>
         Customers Feedback
       </Typography>

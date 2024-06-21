@@ -1,13 +1,15 @@
-import { Box, Button, IconButton, Link, AppBar, Toolbar } from "@mui/material"
 import { Menu as MenuIcon } from "@mui/icons-material"
+import { AppBar, Box, Button, IconButton, Link, Toolbar } from "@mui/material"
 import { useDispatch, useSelector } from "react-redux"
+import { useNavigate } from "react-router-dom"
 import { Dispatch } from "../../store"
 import { toggleDrawer } from "../../store/drawer/action"
-import styles from "./style.module.scss"
 import { State } from "../../store/rootReducer"
 import { TemporaryDrawer } from "../TemporaryDrawer"
+import styles from "./style.module.scss"
 
 export const Header = () => {
+  const navigate = useNavigate()
   const dispatch: Dispatch = useDispatch()
   const drawerState = useSelector((state: State) => state.drawer)
 
@@ -46,22 +48,52 @@ export const Header = () => {
             }
           }}
         >
-          <Link underline="none" variant="button">
+          <Link
+            underline="none"
+            variant="button"
+            onClick={() => navigate("home")}
+          >
             Home
           </Link>
-          <Link underline="none" variant="button">
+          <Link
+            underline="none"
+            variant="button"
+            onClick={() => navigate("services")}
+          >
             Services
           </Link>
-          <Link underline="none" variant="button">
+          <Link
+            underline="none"
+            variant="button"
+            onClick={() => navigate("tools")}
+          >
             Tools
           </Link>
-          <Link underline="none" variant="button">
+          <Link
+            underline="none"
+            variant="button"
+            onClick={() => navigate("aboutUs")}
+          >
             About Us
+          </Link>
+          <Link
+            underline="none"
+            variant="button"
+            onClick={() => navigate("feedback")}
+          >
+            feedback
           </Link>
         </Box>
 
         <Box className={styles.rightSideBox}>
-          <Button variant="contained">Book Appointment</Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+              navigate("contactUs")
+            }}
+          >
+            Book Appointment
+          </Button>
         </Box>
       </Toolbar>
     </AppBar>

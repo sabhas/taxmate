@@ -3,7 +3,7 @@ import styles from "../style.module.scss"
 
 export const Home = () => {
   return (
-    <Box className={styles.homeContainer}>
+    <Box className={styles.homeContainer} id="home">
       <Box className={styles.content}>
         <Typography variant="h3">Welcome to Taxmate</Typography>
         <Typography variant="h5">
