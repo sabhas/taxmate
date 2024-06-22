@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom"
 import { MainLayout } from "./layout/Main"
 import { HomePage } from "./pages/home"
+import { TaxCalculator } from "./pages/taxCalculator"
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/aboutUs" element={<HomePage />} />
         <Route path="/feedback" element={<HomePage />} />
         <Route path="/contactUs" element={<HomePage />} />
+        <Route path="/taxCalculator" element={<TaxCalculator />} />
         <Route path="*" element={<Navigate to="/home" />} />
       </Route>
     </Routes>
