@@ -21,6 +21,13 @@ export const TaxCalculator = () => {
   const [taxYear, setTaxYear] = useState(2022)
   const [totalTax, setTotalTax] = useState(0)
 
+  const handleReset = () => {
+    setSalaryIncome(0)
+    setBusinessIncome(0)
+    setPropertyIncome(0)
+    setTotalTax(0)
+  }
+
   const handleCalculateTax = () => {
     let propertyTax = 0
     let businessTax = 0
@@ -91,7 +98,7 @@ export const TaxCalculator = () => {
             backgroundColor: "darkred",
             marginTop: "10px"
           }}
-          onClick={handleCalculateTax}
+          onClick={handleReset}
         >
           Reset
         </Button>
