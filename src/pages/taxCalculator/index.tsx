@@ -10,20 +10,29 @@ import {
   TextField,
   Typography
 } from "@mui/material"
-import { Dispatch, SetStateAction, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { calculateTax, TaxType } from "../../utils"
 import styles from "./style.module.scss"
 
 export const TaxCalculator = () => {
   const [salaryIncome, setSalaryIncome] = useState(0)
   const [businessIncome, setBusinessIncome] = useState(0)
+  const [shareFromAop, setShareFromAop] = useState(0)
   const [propertyIncome, setPropertyIncome] = useState(0)
   const [taxYear, setTaxYear] = useState(2022)
   const [totalTax, setTotalTax] = useState(0)
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    })
+  }, [])
+
   const handleReset = () => {
     setSalaryIncome(0)
     setBusinessIncome(0)
+    setShareFromAop(0)
     setPropertyIncome(0)
     setTotalTax(0)
   }
@@ -32,7 +41,7 @@ export const TaxCalculator = () => {
     let propertyTax = 0
     let businessTax = 0
     let salaryTax = 0
-    let netBusinessIncome = businessIncome
+    let netBusinessIncome = businessIncome + shareFromAop
 
     if (taxYear <= 2021) {
       propertyTax = calculateTax(propertyIncome, taxYear, TaxType.Property)
@@ -60,7 +69,10 @@ export const TaxCalculator = () => {
       )
     }
 
-    setTotalTax(propertyTax + salaryTax + businessTax)
+    const grossTotalTax = propertyTax + salaryTax + businessTax
+    const taxCredit = (grossTotalTax / totalIncome) * shareFromAop
+
+    setTotalTax(grossTotalTax - taxCredit)
   }
 
   return (
@@ -78,6 +90,11 @@ export const TaxCalculator = () => {
           label="Business Income"
           value={businessIncome}
           onChange={setBusinessIncome}
+        />
+        <IncomeInput
+          label="Share from AOP"
+          value={shareFromAop}
+          onChange={setShareFromAop}
         />
         <IncomeInput
           label="Property Income"
@@ -103,7 +120,7 @@ export const TaxCalculator = () => {
           Reset
         </Button>
         <Typography variant="h5" sx={{ marginTop: "10px" }}>
-          Total Tax: {totalTax}
+          Total Tax: {formatNumber(totalTax)}
         </Typography>
       </Paper>
     </Box>
