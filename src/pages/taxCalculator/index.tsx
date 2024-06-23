@@ -7,6 +7,11 @@ import {
   MenuItem,
   Paper,
   Select,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
   TextField,
   Typography
 } from "@mui/material"
@@ -25,6 +30,13 @@ export const TaxCalculator = () => {
   const [selectedSector, setSelectedSector] = useState(Sectors[0])
   const [taxYear, setTaxYear] = useState(TaxYears[0])
   const [totalTax, setTotalTax] = useState(0)
+  const [taxDetail, setTaxDetail] = useState({
+    propertyTax: 0,
+    grossTax: 0,
+    taxCredit: 0,
+    netTax: 0,
+    turnoverTax: 0
+  })
 
   useEffect(() => {
     window.scrollTo({
@@ -46,6 +58,7 @@ export const TaxCalculator = () => {
     let propertyTax = 0
     let businessTax = 0
     let salaryTax = 0
+    let turnoverTax = 0
     let taxCredit = 0
     let netBusinessIncome = businessIncome + shareFromAop
 
@@ -76,17 +89,27 @@ export const TaxCalculator = () => {
       )
     }
 
-    const grossTotalTax = salaryTax + businessTax
+    const grossTax = salaryTax + businessTax
     if (totalIncome > 0) {
-      taxCredit = (grossTotalTax / totalIncome) * shareFromAop
+      taxCredit = (grossTax / totalIncome) * shareFromAop
     }
 
-    const normalTax = grossTotalTax - taxCredit
+    const netTax = grossTax - taxCredit
 
-    const turnoverTaxRate = selectedSector.taxRate[taxYear]
-    const turnoverTax = turnover * turnoverTaxRate
+    // consider turnover tax only if it is more than or equal to 100 million
+    if (turnover >= 100000000) {
+      const turnoverTaxRate = selectedSector.taxRate[taxYear]
+      turnoverTax = turnover * turnoverTaxRate
+    }
 
-    setTotalTax(Math.max(normalTax, turnoverTax) + propertyTax)
+    setTotalTax(Math.max(netTax, turnoverTax) + propertyTax)
+    setTaxDetail({
+      propertyTax,
+      grossTax,
+      taxCredit,
+      netTax,
+      turnoverTax
+    })
   }
 
   return (
@@ -145,15 +168,45 @@ export const TaxCalculator = () => {
           Reset
         </Button>
         <Typography variant="h5" sx={{ marginTop: "10px" }}>
-          Total Tax: {formatNumber(totalTax)}
+          Tax Details
         </Typography>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableBody>
+              <TableRow>
+                <TableCell>Property Tax</TableCell>
+                <TableCell>{formatNumber(taxDetail.propertyTax)}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Gross Tax</TableCell>
+                <TableCell>{formatNumber(taxDetail.grossTax)}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Tax Credit</TableCell>
+                <TableCell>{formatNumber(taxDetail.taxCredit)}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Net Tax</TableCell>
+                <TableCell>{formatNumber(taxDetail.netTax)}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Turnover Tax</TableCell>
+                <TableCell>{formatNumber(taxDetail.turnoverTax)}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell sx={{ fontWeight: "bold" }}>Total Tax</TableCell>
+                <TableCell>{formatNumber(totalTax)}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Paper>
     </Box>
   )
 }
 
 const formatNumber = (value: number) => {
-  return new Intl.NumberFormat().format(value)
+  return new Intl.NumberFormat().format(Math.round(value))
 }
 
 const unformatNumber = (value: string) => {
