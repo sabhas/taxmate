@@ -46,6 +46,7 @@ export const TaxCalculator = () => {
     let propertyTax = 0
     let businessTax = 0
     let salaryTax = 0
+    let taxCredit = 0
     let netBusinessIncome = businessIncome + shareFromAop
 
     if (taxYear <= 2021) {
@@ -75,15 +76,17 @@ export const TaxCalculator = () => {
       )
     }
 
-    const grossTotalTax = propertyTax + salaryTax + businessTax
-    const taxCredit = (grossTotalTax / totalIncome) * shareFromAop
+    const grossTotalTax = salaryTax + businessTax
+    if (totalIncome > 0) {
+      taxCredit = (grossTotalTax / totalIncome) * shareFromAop
+    }
 
     const normalTax = grossTotalTax - taxCredit
 
     const turnoverTaxRate = selectedSector.taxRate[taxYear]
     const turnoverTax = turnover * turnoverTaxRate
 
-    setTotalTax(Math.max(normalTax, turnoverTax))
+    setTotalTax(Math.max(normalTax, turnoverTax) + propertyTax)
   }
 
   return (
