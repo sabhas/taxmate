@@ -18,7 +18,7 @@ export const TaxCalculator = () => {
   const [businessIncome, setBusinessIncome] = useState(0)
   const [shareFromAop, setShareFromAop] = useState(0)
   const [propertyIncome, setPropertyIncome] = useState(0)
-  const [taxYear, setTaxYear] = useState(2022)
+  const [taxYear, setTaxYear] = useState(TaxYears[0])
   const [totalTax, setTotalTax] = useState(0)
 
   useEffect(() => {
@@ -53,18 +53,19 @@ export const TaxCalculator = () => {
 
     const totalIncome = salaryIncome + netBusinessIncome
 
-    if (salaryIncome < 0.75 * totalIncome) {
-      // Apply business tax rate to salary income
-      businessTax = calculateTax(
-        netBusinessIncome + salaryIncome,
-        taxYear,
-        TaxType.Business
-      )
-    } else {
+    if (salaryIncome > 0.75 * totalIncome) {
+      // apply salary tax rate
       salaryTax = calculateTax(
         salaryIncome + netBusinessIncome,
         taxYear,
         TaxType.Salary
+      )
+    } else {
+      // Apply business tax rate
+      businessTax = calculateTax(
+        netBusinessIncome + salaryIncome,
+        taxYear,
+        TaxType.Business
       )
     }
 
@@ -157,6 +158,9 @@ const IncomeInput = ({ label, value, onChange }: IncomeInputProps) => {
     />
   )
 }
+
+const TaxYears = [2025, 2024, 2023, 2022, 2021, 2020]
+
 type TaxYearSelectProps = {
   value: number
   onChange: Dispatch<SetStateAction<number>>
@@ -171,7 +175,7 @@ const TaxYearSelect = ({ value, onChange }: TaxYearSelectProps) => (
       value={value}
       onChange={(e) => onChange(+e.target.value)}
     >
-      {[2020, 2021, 2022, 2023, 2024, 2025].map((year) => (
+      {TaxYears.map((year) => (
         <MenuItem key={year} value={year}>
           {year}
         </MenuItem>
