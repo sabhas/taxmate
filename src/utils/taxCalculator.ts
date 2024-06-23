@@ -1,7 +1,4 @@
-interface TaxBracket {
-  limit: number
-  rate: number
-}
+import { TaxBracket, TaxType } from "../types"
 
 const salaryTaxBrackets: { [key: number]: TaxBracket[] } = {
   2020: [
@@ -154,12 +151,6 @@ const propertyTaxBrackets: { [key: number]: TaxBracket[] } = {
     { limit: 8000000, rate: 0.3 },
     { limit: Infinity, rate: 0.35 }
   ]
-}
-
-export enum TaxType {
-  Salary = "salary",
-  Business = "business",
-  Property = "property"
 }
 
 export const calculateTax = (

@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Box,
   Button,
   FormControl,
@@ -10,14 +11,18 @@ import {
   Typography
 } from "@mui/material"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import { calculateTax, TaxType } from "../../utils"
+import { calculateTax } from "../../utils"
 import styles from "./style.module.scss"
+import { Sector, TaxType } from "../../types"
+import { Sectors } from "../../utils/sectors"
 
 export const TaxCalculator = () => {
   const [salaryIncome, setSalaryIncome] = useState(0)
   const [businessIncome, setBusinessIncome] = useState(0)
   const [shareFromAop, setShareFromAop] = useState(0)
   const [propertyIncome, setPropertyIncome] = useState(0)
+  const [turnover, setTurnover] = useState(0)
+  const [selectedSector, setSelectedSector] = useState(Sectors[0])
   const [taxYear, setTaxYear] = useState(TaxYears[0])
   const [totalTax, setTotalTax] = useState(0)
 
@@ -33,6 +38,7 @@ export const TaxCalculator = () => {
     setBusinessIncome(0)
     setShareFromAop(0)
     setPropertyIncome(0)
+    setTurnover(0)
     setTotalTax(0)
   }
 
@@ -72,7 +78,12 @@ export const TaxCalculator = () => {
     const grossTotalTax = propertyTax + salaryTax + businessTax
     const taxCredit = (grossTotalTax / totalIncome) * shareFromAop
 
-    setTotalTax(grossTotalTax - taxCredit)
+    const normalTax = grossTotalTax - taxCredit
+
+    const turnoverTaxRate = selectedSector.taxRate[taxYear]
+    const turnoverTax = turnover * turnoverTaxRate
+
+    setTotalTax(Math.max(normalTax, turnoverTax))
   }
 
   return (
@@ -101,6 +112,17 @@ export const TaxCalculator = () => {
           value={propertyIncome}
           onChange={setPropertyIncome}
         />
+        <IncomeInput
+          label="Annual Turnover"
+          value={turnover}
+          onChange={setTurnover}
+        />
+        {turnover > 0 && (
+          <SectorSelect
+            selectedSector={selectedSector}
+            onChange={setSelectedSector}
+          />
+        )}
         <TaxYearSelect value={taxYear} onChange={setTaxYear} />
         <Button
           variant="contained"
@@ -183,3 +205,24 @@ const TaxYearSelect = ({ value, onChange }: TaxYearSelectProps) => (
     </Select>
   </FormControl>
 )
+
+type SectorSelectProps = {
+  selectedSector: Sector
+  onChange: Dispatch<SetStateAction<Sector>>
+}
+
+const SectorSelect = ({ selectedSector, onChange }: SectorSelectProps) => {
+  return (
+    <Autocomplete
+      fullWidth
+      disableClearable
+      options={Sectors}
+      getOptionLabel={(option) => option.label}
+      value={selectedSector}
+      onChange={(_: any, newValue: Sector) => onChange(newValue)}
+      renderInput={(params) => (
+        <TextField {...params} label="Sector" margin="normal" fullWidth />
+      )}
+    />
+  )
+}
