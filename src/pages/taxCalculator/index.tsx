@@ -1,4 +1,3 @@
-// src/TaxCalculator.js
 import {
   Box,
   Button,

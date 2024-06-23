@@ -48,41 +48,11 @@ export const Header = () => {
             }
           }}
         >
-          <Link
-            underline="none"
-            variant="button"
-            onClick={() => navigate("home")}
-          >
-            Home
-          </Link>
-          <Link
-            underline="none"
-            variant="button"
-            onClick={() => navigate("services")}
-          >
-            Services
-          </Link>
-          <Link
-            underline="none"
-            variant="button"
-            onClick={() => navigate("tools")}
-          >
-            Tools
-          </Link>
-          <Link
-            underline="none"
-            variant="button"
-            onClick={() => navigate("aboutUs")}
-          >
-            About Us
-          </Link>
-          <Link
-            underline="none"
-            variant="button"
-            onClick={() => navigate("feedback")}
-          >
-            feedback
-          </Link>
+          <NavigationLink label="Home" link="home" />
+          <NavigationLink label="Services" link="services" />
+          <NavigationLink label="Tools" link="tools" />
+          <NavigationLink label="AboutUs" link="aboutUs" />
+          <NavigationLink label="Feedback" link="feedback" />
         </Box>
 
         <Box className={styles.rightSideBox}>
@@ -97,5 +67,25 @@ export const Header = () => {
         </Box>
       </Toolbar>
     </AppBar>
+  )
+}
+
+type NavigationLinkProps = {
+  label: string
+  link: string
+}
+
+const NavigationLink = ({ label, link }: NavigationLinkProps) => {
+  const navigate = useNavigate()
+
+  return (
+    <Link
+      underline="none"
+      variant="button"
+      sx={{ cursor: "pointer" }}
+      onClick={() => navigate(link)}
+    >
+      {label}
+    </Link>
   )
 }
