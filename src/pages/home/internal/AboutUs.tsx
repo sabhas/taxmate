@@ -29,7 +29,7 @@ const members = [
 export const AboutUs = () => {
   return (
     <Box className={styles.aboutUsContainer} id="aboutUs">
-      <Typography variant="h4" align="center" gutterBottom>
+      <Typography variant="h4" align="center" color="primary" gutterBottom>
         About Us
       </Typography>
       <Grid container spacing={4}>

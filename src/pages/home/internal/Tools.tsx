@@ -31,7 +31,7 @@ export const Tools = () => {
 
   return (
     <Box className={styles.toolsContainer} id="tools">
-      <Typography variant="h4" align="center" gutterBottom>
+      <Typography variant="h4" align="center" color="primary" gutterBottom>
         Tools
       </Typography>
       <Grid container spacing={4}>

@@ -37,7 +37,7 @@ const services = [
 export const Services = () => {
   return (
     <Box className={styles.servicesContainer} id="services">
-      <Typography variant="h4" align="center" gutterBottom>
+      <Typography variant="h4" align="center" color="primary" gutterBottom>
         Our Services
       </Typography>
       <Grid container spacing={4}>

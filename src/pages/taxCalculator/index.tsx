@@ -114,7 +114,7 @@ export const TaxCalculator = () => {
 
   return (
     <Box className={styles.container}>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" color="primary" gutterBottom>
         Tax Calculator
       </Typography>
       <Paper elevation={3} className={styles.inputWrapper}>
