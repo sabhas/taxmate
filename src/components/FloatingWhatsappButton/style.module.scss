@@ -1,0 +1,20 @@
+.whatsappFloatingButton {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 56px; /* Adjust size as needed */
+  height: 56px; /* Adjust size as needed */
+  background-color: #25d366;
+  color: #fff;
+  border: none;
+  padding: 0; /* Remove padding to ensure fixed size */
+  font-size: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #128c7e;
+  }
+}

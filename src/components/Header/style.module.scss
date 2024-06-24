@@ -1,0 +1,24 @@
+.AppBar {
+  background-color: var(--mui-palette-common-background) !important;
+  z-index: 1400 !important;
+  height: 60px;
+  flex-direction: row !important;
+  align-items: center;
+
+  .toolbar {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .links {
+    gap: 10px;
+  }
+
+  .rightSideBox {
+    flex-grow: 1;
+    display: flex;
+    justify-content: flex-end;
+  }
+}

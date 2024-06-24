@@ -16,6 +16,14 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@emailjs/browser": "4.3.3",
+    "@emotion/react": "11.11.4",
+    "@emotion/styled": "11.11.5",
+    "@fontsource/roboto": "5.0.13",
+    "@mui/icons-material": "5.15.20",
+    "@mui/lab": "5.0.0-alpha.170",
+    "@mui/material": "5.15.20",
+    "@react-google-maps/api": "2.19.3",
     "gatsby": "^5.13.5",
     "gatsby-plugin-image": "^3.13.1",
     "gatsby-plugin-sass": "^6.13.1",
@@ -25,6 +33,8 @@
     "gatsby-transformer-sharp": "^5.13.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-multi-carousel": "2.8.5",
+    "react-toastify": "10.0.5",
     "sass": "^1.77.6"
   },
   "devDependencies": {
