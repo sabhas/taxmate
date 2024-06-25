@@ -1,11 +1,17 @@
+import { Avatar, Box, Grid, Paper, Typography } from "@mui/material"
+import { graphql, useStaticQuery } from "gatsby"
+import {
+  GatsbyImage,
+  IGatsbyImageData,
+  StaticImage,
+  getImage
+} from "gatsby-plugin-image"
 import React from "react"
+import Carousel from "react-multi-carousel"
+import "react-multi-carousel/lib/styles.css"
+import { feedbacks, members, services, tools } from "../data/homePage"
 import Layout from "../layout"
 import * as styles from "../scss/index.module.scss"
-import { Avatar, Box, Grid, Paper, Typography } from "@mui/material"
-import { members, services, tools } from "../data/homePage"
-import { StaticImage } from "gatsby-plugin-image"
-import { graphql, useStaticQuery } from "gatsby"
-import { GatsbyImage, getImage, IGatsbyImageData } from "gatsby-plugin-image"
 
 const IndexPage = () => {
   return (
@@ -14,6 +20,7 @@ const IndexPage = () => {
       <Services />
       <Tools />
       <AboutUs />
+      <Feedback />
     </Layout>
   )
 }
@@ -101,21 +108,6 @@ const Tools = () => (
   </Box>
 )
 
-type ImageData = {
-  node: {
-    relativePath: string
-    childImageSharp: {
-      gatsbyImageData: IGatsbyImageData
-    }
-  }
-}
-
-type QueryResult = {
-  allFile: {
-    edges: ImageData[]
-  }
-}
-
 const AboutUs = () => {
   const data: QueryResult = useStaticQuery(query)
 
@@ -161,6 +153,50 @@ const AboutUs = () => {
   )
 }
 
+const Feedback = () => (
+  <Box className={styles.feedbackContainer} id="feedback">
+    <Typography variant="h4" align="center" color="primary" gutterBottom>
+      Customers Feedback
+    </Typography>
+    <Typography variant="h6" align="center" color="textSecondary" gutterBottom>
+      What Customers Think About Taxmate
+    </Typography>
+    <Carousel
+      infinite
+      pauseOnHover
+      centerMode
+      autoPlay
+      shouldResetAutoplay={false}
+      responsive={{
+        desktop: {
+          breakpoint: { max: 3000, min: 1024 },
+          items: 2
+        },
+        mobile: {
+          breakpoint: { max: 1024, min: 0 },
+          items: 1
+        }
+      }}
+      sliderClass={styles.slider}
+    >
+      {feedbacks.map((feedback, index) => (
+        <Box key={index} className={styles.feedbackBox}>
+          <img src={feedback.image} alt={feedback.name} />
+          <Typography variant="h6" className={styles.customerName}>
+            {feedback.name}
+          </Typography>
+          <Typography variant="body2" className={styles.customerRole}>
+            {feedback.role}
+          </Typography>
+          <Typography variant="body2" className={styles.feedback}>
+            {feedback.feedback}
+          </Typography>
+        </Box>
+      ))}
+    </Carousel>
+  </Box>
+)
+
 const query = graphql`
   query {
     allFile {
@@ -180,3 +216,18 @@ const query = graphql`
     }
   }
 `
+
+type ImageData = {
+  node: {
+    relativePath: string
+    childImageSharp: {
+      gatsbyImageData: IGatsbyImageData
+    }
+  }
+}
+
+type QueryResult = {
+  allFile: {
+    edges: ImageData[]
+  }
+}

@@ -81,3 +81,49 @@ export const members = [
   }
   // Add more members as needed
 ]
+
+export const feedbacks = [
+  {
+    name: "John Doe",
+    role: "Co-Founder",
+    feedback:
+      "While looking in the matter of Company Registration in Pakistan. I contacted Tax Calculator for Company Registration for doing work in Medical Science Research. Outstanding services and highly recommended to work with.",
+    image: "https://picsum.photos/id/1005/60/60"
+  },
+  {
+    name: "Alice Green",
+    role: "HR Manager",
+    feedback:
+      "Tax Calculator is a Professional Firm who help people for Company Registration in Lahore and filing Income Tax Return. Me and my colleagues in Company have get benefited filing Tax Calculator.",
+    image: "https://picsum.photos/id/1011/60/60"
+  },
+  {
+    name: "Mathew Brown",
+    role: "Co-Founder",
+    feedback:
+      "While looking in the matter of Company Registration in Pakistan. I contacted Tax Calculator for Company Registration for doing work in Medical Science Research. Outstanding services and highly recommended to work with.",
+    image: "https://picsum.photos/id/1005/60/60"
+  },
+  {
+    name: "Mike Robert",
+    role: "HR Manager",
+    feedback:
+      "Tax Calculator is a Professional Firm who help people for Company Registration in Lahore and filing Income Tax Return. Me and my colleagues in Company have get benefited filing Tax Calculator.",
+    image: "https://picsum.photos/id/1011/60/60"
+  },
+  {
+    name: "Garry Simpson",
+    role: "Co-Founder",
+    feedback:
+      "While looking in the matter of Company Registration in Pakistan. I contacted Tax Calculator for Company Registration for doing work in Medical Science Research. Outstanding services and highly recommended to work with.",
+    image: "https://picsum.photos/id/1005/60/60"
+  },
+  {
+    name: "Tom Holland",
+    role: "HR Manager",
+    feedback:
+      "Tax Calculator is a Professional Firm who help people for Company Registration in Lahore and filing Income Tax Return. Me and my colleagues in Company have get benefited filing Tax Calculator.",
+    image: "https://picsum.photos/id/1011/60/60"
+  }
+  // Add more feedbacks as needed
+]
