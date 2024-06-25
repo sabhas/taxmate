@@ -2,8 +2,10 @@ import React from "react"
 import Layout from "../layout"
 import * as styles from "../scss/index.module.scss"
 import { Avatar, Box, Grid, Paper, Typography } from "@mui/material"
-import { services, tools } from "../data/homePage"
+import { members, services, tools } from "../data/homePage"
 import { StaticImage } from "gatsby-plugin-image"
+import { graphql, useStaticQuery } from "gatsby"
+import { GatsbyImage, getImage, IGatsbyImageData } from "gatsby-plugin-image"
 
 const IndexPage = () => {
   return (
@@ -11,6 +13,7 @@ const IndexPage = () => {
       <Home />
       <Services />
       <Tools />
+      <AboutUs />
     </Layout>
   )
 }
@@ -97,3 +100,83 @@ const Tools = () => (
     </Grid>
   </Box>
 )
+
+type ImageData = {
+  node: {
+    relativePath: string
+    childImageSharp: {
+      gatsbyImageData: IGatsbyImageData
+    }
+  }
+}
+
+type QueryResult = {
+  allFile: {
+    edges: ImageData[]
+  }
+}
+
+const AboutUs = () => {
+  const data: QueryResult = useStaticQuery(query)
+
+  const imageMap = data.allFile.edges.reduce((acc, edge) => {
+    acc[edge.node.relativePath] = edge.node.childImageSharp.gatsbyImageData
+    return acc
+  }, {} as { [key: string]: IGatsbyImageData })
+
+  return (
+    <Box className={styles.aboutUsContainer} id="aboutUs">
+      <Typography variant="h4" align="center" color="primary" gutterBottom>
+        About Us
+      </Typography>
+      <Grid container spacing={4}>
+        {members.map((member, index) => {
+          const image = getImage(imageMap[member.image])
+          return (
+            <Grid item xs={12} sm={6} md={4} key={index}>
+              <Paper className={styles.memberBox} elevation={3}>
+                {image && (
+                  <GatsbyImage
+                    image={image}
+                    alt={member.name}
+                    style={{ borderRadius: "50%", marginBottom: "15px" }}
+                    imgStyle={{ objectFit: "cover" }}
+                  />
+                )}
+                <Typography variant="h6" className={styles.name}>
+                  {member.name}
+                </Typography>
+                <Typography variant="body2" className={styles.qualification}>
+                  {member.qualification}
+                </Typography>
+                <Typography variant="body2" className={styles.description}>
+                  {member.description}
+                </Typography>
+              </Paper>
+            </Grid>
+          )
+        })}
+      </Grid>
+    </Box>
+  )
+}
+
+const query = graphql`
+  query {
+    allFile {
+      edges {
+        node {
+          relativePath
+          childImageSharp {
+            gatsbyImageData(
+              width: 100
+              height: 100
+              placeholder: BLURRED
+              layout: FIXED
+            )
+          }
+        }
+      }
+    }
+  }
+`

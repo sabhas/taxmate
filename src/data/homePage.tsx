@@ -56,3 +56,28 @@ export const tools = [
     icon: <AtlStatusIcon fontSize="large" />
   }
 ]
+
+export const members = [
+  {
+    name: "John Doe",
+    qualification: "CPA, MBA",
+    description:
+      "John has over 15 years of experience in tax consulting and has worked with a variety of clients.",
+    image: "John.jpg"
+  },
+  {
+    name: "Jane Smith",
+    qualification: "CA, B.Com",
+    description:
+      "Jane specializes in corporate tax planning and compliance, helping businesses optimize their tax strategies.",
+    image: "Jane.jpg"
+  },
+  {
+    name: "Alice Brown",
+    qualification: "LLB, LLM",
+    description:
+      "Alice provides expert advice on tax law and represents clients in tax disputes and audits.",
+    image: "Alice.jpg"
+  }
+  // Add more members as needed
+]
