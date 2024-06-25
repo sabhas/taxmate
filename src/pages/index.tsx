@@ -1,4 +1,4 @@
-import { Avatar, Box, Grid, Paper, Typography } from "@mui/material"
+import { Avatar, Box, Grid, Paper, TextField, Typography } from "@mui/material"
 import { graphql, useStaticQuery } from "gatsby"
 import {
   GatsbyImage,
@@ -6,12 +6,16 @@ import {
   StaticImage,
   getImage
 } from "gatsby-plugin-image"
-import React from "react"
+import React, { useCallback, useRef, useState } from "react"
 import Carousel from "react-multi-carousel"
 import "react-multi-carousel/lib/styles.css"
 import { feedbacks, members, services, tools } from "../data/homePage"
 import Layout from "../layout"
 import * as styles from "../scss/index.module.scss"
+import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api"
+import { LoadingButton } from "@mui/lab"
+import emailjs from "@emailjs/browser"
+import { toast } from "react-toastify"
 
 const IndexPage = () => {
   return (
@@ -21,11 +25,23 @@ const IndexPage = () => {
       <Tools />
       <AboutUs />
       <Feedback />
+      <ContactUs />
     </Layout>
   )
 }
 
-export const Head = () => <title>Taxmate</title>
+export const Head = () => {
+  return (
+    <>
+      <title>Taxmate</title>
+      <script
+        src="https://www.google.com/recaptcha/api.js"
+        async
+        defer
+      ></script>
+    </>
+  )
+}
 
 export default IndexPage
 
@@ -196,6 +212,159 @@ const Feedback = () => (
     </Carousel>
   </Box>
 )
+
+const ContactUs = () => {
+  const form = useRef<HTMLFormElement | null>(null)
+  const [isSendingEmail, setIsSendingEmail] = useState(false)
+
+  const sendEmail = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    if (form.current) {
+      setIsSendingEmail(true)
+      emailjs
+        .sendForm(
+          process.env.GATSBY_EMAIL_SERVICE_ID as string,
+          process.env.GATSBY_EMAIL_TEMPLATE_ID as string,
+          form.current,
+          process.env.GATSBY_EMAIL_ACCOUNT_ID as string
+        )
+        .then(() => {
+          toast.success("Message successfully sent!")
+          form.current?.reset()
+        })
+        .catch((err) => {
+          console.log(`Error occurred in sending email`, err)
+          toast.error("Failed to send the message")
+        })
+        .finally(() => {
+          setIsSendingEmail(false)
+        })
+    }
+  }
+
+  return (
+    <Box className={styles.contactUsContainer} id="contactUs">
+      <Typography variant="h4" align="center" color="primary" gutterBottom>
+        Contact Us
+      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          gap: "10px",
+          flexDirection: {
+            xs: "column",
+            md: "row"
+          }
+        }}
+      >
+        <Box
+          ref={form}
+          component="form"
+          method="post"
+          action=""
+          onSubmit={sendEmail}
+          className={styles.contactForm}
+        >
+          <TextField
+            label="Name"
+            name="name"
+            variant="outlined"
+            fullWidth
+            required
+            margin="normal"
+          />
+          <TextField
+            label="Email"
+            name="reply_to"
+            variant="outlined"
+            fullWidth
+            required
+            margin="normal"
+            type="email"
+          />
+          <TextField
+            label="Phone"
+            name="phone"
+            variant="outlined"
+            fullWidth
+            required
+            margin="normal"
+          />
+          <TextField
+            label="Message"
+            name="message"
+            variant="outlined"
+            fullWidth
+            required
+            margin="normal"
+            multiline
+            rows={4}
+          />
+          <div
+            className="g-recaptcha"
+            data-sitekey="6LfhbvwpAAAAABfVn96TUjhxw9wMfdDIXxw8SbEw"
+          ></div>
+          <LoadingButton
+            type="submit"
+            variant="contained"
+            color="primary"
+            loading={isSendingEmail}
+          >
+            Send Message
+          </LoadingButton>
+        </Box>
+        <Map />
+      </Box>
+    </Box>
+  )
+}
+
+const containerStyle = {
+  width: "100%",
+  minHeight: "485px",
+  flex: 1
+}
+
+const taxmateCord = {
+  lat: 31.622685,
+  lng: 71.059266
+}
+
+const Map = () => {
+  const { isLoaded } = useJsApiLoader({
+    id: "google-map-script",
+    googleMapsApiKey: process.env.GATSBY_GOOGLE_MAP_API_KEY as string
+  })
+
+  const [_, setMap] = useState<google.maps.Map | null>(null)
+
+  const onLoad = useCallback((map: google.maps.Map) => {
+    // This is just an example of getting and using the map instance!!! don't just blindly copy!
+    const bounds = new window.google.maps.LatLngBounds(taxmateCord)
+    map.fitBounds(bounds)
+
+    setMap(map)
+  }, [])
+
+  const onUnmount = useCallback(() => {
+    setMap(null)
+  }, [])
+
+  if (!isLoaded) return null
+
+  return (
+    <GoogleMap
+      mapContainerStyle={containerStyle}
+      center={taxmateCord}
+      zoom={14}
+      onLoad={onLoad}
+      onUnmount={onUnmount}
+    >
+      <Marker position={taxmateCord} />
+    </GoogleMap>
+  )
+}
 
 const query = graphql`
   query {
