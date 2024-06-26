@@ -1,19 +1,28 @@
 import React, { Dispatch, SetStateAction } from "react"
 import { Drawer, Link, List, ListItemButton } from "@mui/material"
+import { navigate } from "gatsby"
 
 type SidebarProps = {
   isOpen: boolean
   setIsOpen: Dispatch<SetStateAction<boolean>>
 }
 
+const links = [
+  { label: "Home", href: "/#home" },
+  { label: "Services", href: "/#services" },
+  { label: "Tools", href: "/#tools" },
+  { label: "About Us", href: "/#aboutUs" },
+  { label: "Feedback", href: "/#feedback" }
+]
+
 export const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
+  const handleNavigation = (href: string) => {
+    navigate(href)
+    setIsOpen(false)
+  }
+
   return (
-    <Drawer
-      open={isOpen}
-      onClose={() => {
-        setIsOpen(false)
-      }}
-    >
+    <Drawer open={isOpen} onClose={() => setIsOpen(false)}>
       <List
         sx={{
           minWidth: 150,
@@ -21,33 +30,19 @@ export const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
           bgcolor: "background.paper"
         }}
         component="nav"
-        dense={true}
+        dense
       >
-        <ListItemButton>
-          <Link underline="none" variant="button">
-            Home
-          </Link>
-        </ListItemButton>
-        <ListItemButton>
-          <Link underline="none" variant="button">
-            Services
-          </Link>
-        </ListItemButton>
-        <ListItemButton>
-          <Link underline="none" variant="button">
-            Tools
-          </Link>
-        </ListItemButton>
-        <ListItemButton>
-          <Link underline="none" variant="button">
-            About Us
-          </Link>
-        </ListItemButton>
-        <ListItemButton>
-          <Link underline="none" variant="button">
-            Feedback
-          </Link>
-        </ListItemButton>
+        {links.map(({ label, href }) => (
+          <ListItemButton key={href}>
+            <Link
+              underline="none"
+              variant="button"
+              onClick={() => handleNavigation(href)}
+            >
+              {label}
+            </Link>
+          </ListItemButton>
+        ))}
       </List>
     </Drawer>
   )

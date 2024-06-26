@@ -1,14 +1,14 @@
 import { Menu as MenuIcon } from "@mui/icons-material"
-import { AppBar, Box, Button, IconButton, Link, Toolbar } from "@mui/material"
+import { AppBar, Box, Button, IconButton, Toolbar } from "@mui/material"
 import React, { useState } from "react"
 import { Sidebar } from "../Sidebar"
 import * as styles from "./style.module.scss"
 import { StaticImage } from "gatsby-plugin-image"
+import { Link, navigate } from "gatsby"
 
 export const Header = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
-  console.log(styles)
   return (
     <AppBar position="fixed" className={styles.AppBar}>
       {/*on small screens show side bar only when menu icon is clicked*/}
@@ -40,6 +40,7 @@ export const Header = () => {
           layout="fixed"
           width={160}
           height={60}
+          onClick={() => navigate("/#home")}
         />
 
         <Box
@@ -51,15 +52,17 @@ export const Header = () => {
             }
           }}
         >
-          <NavigationLink label="Home" link="home" />
-          <NavigationLink label="Services" link="services" />
-          <NavigationLink label="Tools" link="tools" />
-          <NavigationLink label="AboutUs" link="aboutUs" />
-          <NavigationLink label="Feedback" link="feedback" />
+          <NavigationLink label="Home" link="/#home" />
+          <NavigationLink label="Services" link="/#services" />
+          <NavigationLink label="Tools" link="/#tools" />
+          <NavigationLink label="AboutUs" link="/#aboutUs" />
+          <NavigationLink label="Feedback" link="/#feedback" />
         </Box>
 
         <Box className={styles.rightSideBox}>
-          <Button variant="contained">Book Appointment</Button>
+          <Button variant="contained" onClick={() => navigate("/#contactUs")}>
+            Book Appointment
+          </Button>
         </Box>
       </Toolbar>
     </AppBar>
@@ -71,9 +74,9 @@ type NavigationLinkProps = {
   link: string
 }
 
-const NavigationLink = ({ label, link }: NavigationLinkProps) => {
+export const NavigationLink = ({ label, link }: NavigationLinkProps) => {
   return (
-    <Link underline="none" variant="button" sx={{ cursor: "pointer" }}>
+    <Link to={link} className={styles.link}>
       {label}
     </Link>
   )
