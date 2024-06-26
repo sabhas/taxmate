@@ -1,5 +1,5 @@
 import { Avatar, Box, Grid, Paper, TextField, Typography } from "@mui/material"
-import { graphql, useStaticQuery } from "gatsby"
+import { graphql, navigate, useStaticQuery } from "gatsby"
 import {
   GatsbyImage,
   IGatsbyImageData,
@@ -108,7 +108,16 @@ const Tools = () => (
     </Typography>
     <Grid container spacing={4}>
       {tools.map((tool, index) => (
-        <Grid item xs={12} sm={6} md={4} key={index}>
+        <Grid
+          item
+          xs={12}
+          sm={6}
+          md={4}
+          key={index}
+          onClick={() => {
+            if (tool.link) navigate(tool.link)
+          }}
+        >
           <Paper className={styles.toolBox} elevation={3}>
             <Avatar className={styles.icon}>{tool.icon}</Avatar>
             <Typography variant="h6" className={styles.title}>
