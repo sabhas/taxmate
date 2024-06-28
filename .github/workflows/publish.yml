@@ -3,7 +3,7 @@ name: Build App and Push gh-pages Branch
 on:
   push:
     branches:
-      - gatsby
+      - main
 
 env:
   GATSBY_GOOGLE_MAP_API_KEY: ${{ secrets.VITE_GOOGLE_MAP_API_KEY }}
