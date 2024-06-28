@@ -1,0 +1,48 @@
+name: Build App and Push gh-pages Branch
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  VITE_GOOGLE_MAP_API_KEY: ${{ secrets.VITE_GOOGLE_MAP_API_KEY }}
+  VITE_APP_EMAIL_SERVICE_ID: ${{ secrets.VITE_APP_EMAIL_SERVICE_ID }}
+  VITE_APP_EMAIL_TEMPLATE_ID: ${{ secrets.VITE_APP_EMAIL_TEMPLATE_ID }}
+  VITE_APP_EMAIL_ACCOUNT_ID: ${{ secrets.VITE_APP_EMAIL_ACCOUNT_ID }}
+
+jobs:
+  create_build_and_publish:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    strategy:
+      matrix:
+        node-version: [lts/iron]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: create build
+        run: npm run build
+
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@4.1.0
+        with:
+          server: ${{ secrets.ftp_server }}
+          username: ${{ secrets.ftp_name }}
+          password: ${{ secrets.ftp_password }}
+          dangerous-clean-slate: true
+          local-dir: ./public/
