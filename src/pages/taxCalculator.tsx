@@ -16,10 +16,19 @@ import {
   Typography
 } from "@mui/material"
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react"
-import { calculateTax } from "../utils"
+import Layout from "../layout"
 import * as styles from "../scss/taxCalculator.module.scss"
 import { Sector, TaxType } from "../types"
+import { calculateTax } from "../utils"
 import { Sectors } from "../utils/"
+
+export const Head = () => {
+  return (
+    <>
+      <title>Taxmate - Tax Calculator</title>
+    </>
+  )
+}
 
 export default () => {
   const [salaryIncome, setSalaryIncome] = useState(0)
@@ -113,95 +122,97 @@ export default () => {
   }
 
   return (
-    <Box className={styles.container}>
-      <Typography variant="h4" color="primary" gutterBottom>
-        Tax Calculator
-      </Typography>
-      <Paper elevation={3} className={styles.inputWrapper}>
-        <IncomeInput
-          label="Salary Income"
-          value={salaryIncome}
-          onChange={setSalaryIncome}
-        />
-        <IncomeInput
-          label="Business Income"
-          value={businessIncome}
-          onChange={setBusinessIncome}
-        />
-        <IncomeInput
-          label="Share from AOP"
-          value={shareFromAop}
-          onChange={setShareFromAop}
-        />
-        <IncomeInput
-          label="Property Income"
-          value={propertyIncome}
-          onChange={setPropertyIncome}
-        />
-        <IncomeInput
-          label="Annual Turnover"
-          value={turnover}
-          onChange={setTurnover}
-        />
-        {turnover > 0 && (
-          <SectorSelect
-            selectedSector={selectedSector}
-            onChange={setSelectedSector}
-          />
-        )}
-        <TaxYearSelect value={taxYear} onChange={setTaxYear} />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleCalculateTax}
-        >
-          Calculate Tax
-        </Button>
-        <Button
-          variant="contained"
-          sx={{
-            backgroundColor: "darkred",
-            marginTop: "10px"
-          }}
-          onClick={handleReset}
-        >
-          Reset
-        </Button>
-        <Typography variant="h5" sx={{ marginTop: "10px" }}>
-          Tax Details
+    <Layout>
+      <Box className={styles.container}>
+        <Typography variant="h4" color="primary" gutterBottom>
+          Tax Calculator
         </Typography>
-        <TableContainer component={Paper}>
-          <Table>
-            <TableBody>
-              <TableRow>
-                <TableCell>Property Tax</TableCell>
-                <TableCell>{formatNumber(taxDetail.propertyTax)}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Gross Tax</TableCell>
-                <TableCell>{formatNumber(taxDetail.grossTax)}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Tax Credit</TableCell>
-                <TableCell>{formatNumber(taxDetail.taxCredit)}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Net Tax</TableCell>
-                <TableCell>{formatNumber(taxDetail.netTax)}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Turnover Tax</TableCell>
-                <TableCell>{formatNumber(taxDetail.turnoverTax)}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell sx={{ fontWeight: "bold" }}>Total Tax</TableCell>
-                <TableCell>{formatNumber(totalTax)}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
-    </Box>
+        <Paper elevation={3} className={styles.inputWrapper}>
+          <IncomeInput
+            label="Salary Income"
+            value={salaryIncome}
+            onChange={setSalaryIncome}
+          />
+          <IncomeInput
+            label="Business Income"
+            value={businessIncome}
+            onChange={setBusinessIncome}
+          />
+          <IncomeInput
+            label="Share from AOP"
+            value={shareFromAop}
+            onChange={setShareFromAop}
+          />
+          <IncomeInput
+            label="Property Income"
+            value={propertyIncome}
+            onChange={setPropertyIncome}
+          />
+          <IncomeInput
+            label="Annual Turnover"
+            value={turnover}
+            onChange={setTurnover}
+          />
+          {turnover > 0 && (
+            <SectorSelect
+              selectedSector={selectedSector}
+              onChange={setSelectedSector}
+            />
+          )}
+          <TaxYearSelect value={taxYear} onChange={setTaxYear} />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleCalculateTax}
+          >
+            Calculate Tax
+          </Button>
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: "darkred",
+              marginTop: "10px"
+            }}
+            onClick={handleReset}
+          >
+            Reset
+          </Button>
+          <Typography variant="h5" sx={{ marginTop: "10px" }}>
+            Tax Details
+          </Typography>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell>Property Tax</TableCell>
+                  <TableCell>{formatNumber(taxDetail.propertyTax)}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Gross Tax</TableCell>
+                  <TableCell>{formatNumber(taxDetail.grossTax)}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Tax Credit</TableCell>
+                  <TableCell>{formatNumber(taxDetail.taxCredit)}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Net Tax</TableCell>
+                  <TableCell>{formatNumber(taxDetail.netTax)}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Turnover Tax</TableCell>
+                  <TableCell>{formatNumber(taxDetail.turnoverTax)}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell sx={{ fontWeight: "bold" }}>Total Tax</TableCell>
+                  <TableCell>{formatNumber(totalTax)}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      </Box>
+    </Layout>
   )
 }
 
