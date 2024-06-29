@@ -17,3 +17,9 @@ export interface Sector {
   label: string
   taxRate: TaxRates
 }
+
+export enum IncomeSource {
+  Salary = "Salary",
+  Business = "Business",
+  Property = "Property"
+}

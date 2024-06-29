@@ -1,4 +1,4 @@
-import { TaxBracket, TaxType } from "../types"
+import { IncomeSource, TaxBracket, TaxType } from "../types"
 
 const salaryTaxBrackets: { [key: number]: TaxBracket[] } = {
   2020: [
@@ -191,4 +191,54 @@ export const calculateTax = (
   }
 
   return tax
+}
+
+export const calculateIncome = (
+  totalTax: number,
+  taxYear: number,
+  incomeSource: IncomeSource
+) => {
+  let brackets: TaxBracket[] = []
+
+  switch (incomeSource) {
+    case IncomeSource.Salary:
+      brackets = salaryTaxBrackets[taxYear]
+      break
+    case IncomeSource.Business:
+      brackets = businessTaxBrackets[taxYear]
+      break
+    case IncomeSource.Property:
+      brackets =
+        taxYear <= 2021
+          ? propertyTaxBrackets[taxYear]
+          : businessTaxBrackets[taxYear]
+      break
+    default:
+      throw new Error("Invalid tax type")
+  }
+
+  let income = 0
+  let previousLimit = 0
+  let remainingTax = totalTax
+
+  for (const { limit, rate } of brackets) {
+    // calculate tax on current limit
+    const taxOnCurrentLimit = (limit - previousLimit) * rate
+
+    if (remainingTax > taxOnCurrentLimit) {
+      income += limit - previousLimit
+      previousLimit = limit
+      remainingTax -= taxOnCurrentLimit
+    } else {
+      income += remainingTax / rate
+      break
+    }
+  }
+
+  if (incomeSource === IncomeSource.Property && taxYear >= 2022) {
+    // added 20% repair and maintenance cost that is not taxable for years more than 2021
+    income = income / 0.8
+  }
+
+  return income
 }
