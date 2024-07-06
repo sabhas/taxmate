@@ -8,7 +8,7 @@ export const theme = extendTheme({
     light: {
       palette: {
         primary: {
-          main: "#291334"
+          main: "#336294"
         },
         info: {
           main: "#3abff8"
@@ -24,19 +24,8 @@ export const theme = extendTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: "2rem"
-        },
-        contained: {
-          ":hover": {
-            background: "#150a1a"
-          }
-        },
-        outlined: {
-          ":hover": {
-            color: "#291334",
-            borderColor: "#291334",
-            background: "#29133433"
-          }
+          borderRadius: "2rem",
+          color: "white"
         }
       }
     }
