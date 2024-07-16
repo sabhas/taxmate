@@ -1,13 +1,20 @@
-import { Box, Typography } from "@mui/material"
-import { graphql, useStaticQuery } from "gatsby"
-import { GatsbyImage, getImage, getSrc } from "gatsby-plugin-image"
-import React, { useState } from "react"
-import Lightbox from "yet-another-react-lightbox"
-import { Fullscreen, Zoom } from "yet-another-react-lightbox/plugins"
-import "yet-another-react-lightbox/styles.css"
-import Layout from "../layout"
-import { QueryResult } from "../types"
-import Masonry, { ResponsiveMasonry } from "react-responsive-masonry"
+import { Box, Typography } from '@mui/material'
+import { graphql, useStaticQuery } from 'gatsby'
+import { GatsbyImage, getImage, getSrc } from 'gatsby-plugin-image'
+import React, { useState } from 'react'
+import Lightbox from 'yet-another-react-lightbox'
+import { Fullscreen, Zoom } from 'yet-another-react-lightbox/plugins'
+import 'yet-another-react-lightbox/styles.css'
+import Layout from '../layout'
+import { QueryResult } from '../types'
+import Masonry from 'react-masonry-css'
+import * as styles from '../scss/news.module.scss'
+
+const breakpointColumnsObj = {
+  default: 3,
+  700: 2,
+  500: 1
+}
 
 export default () => {
   const data: QueryResult = useStaticQuery(query)
@@ -21,28 +28,27 @@ export default () => {
 
   return (
     <Layout>
-      <Box sx={{ padding: "20px" }}>
-        <Typography variant="h4" align="center" color="primary" gutterBottom>
+      <Box sx={{ padding: '20px' }}>
+        <Typography variant='h4' align='center' color='primary' gutterBottom>
           Important Information
         </Typography>
 
-        <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
-          <Masonry gutter="10px">
-            {images.map(({ node }, index) => {
-              const image = getImage(node.childImageSharp.gatsbyImageData)
-              if (!image) return null
+        <Masonry
+          breakpointCols={breakpointColumnsObj}
+          className={styles.masonryGrid}
+          columnClassName={styles.column}
+        >
+          {images.map(({ node }, index) => {
+            const image = getImage(node.childImageSharp.gatsbyImageData)
+            if (!image) return null
 
-              return (
-                <Box key={index} onClick={() => setIndex(index)}>
-                  <GatsbyImage
-                    image={image}
-                    alt={`Gallery image ${index + 1}`}
-                  />
-                </Box>
-              )
-            })}
-          </Masonry>
-        </ResponsiveMasonry>
+            return (
+              <Box key={index} onClick={() => setIndex(index)}>
+                <GatsbyImage image={image} alt={`Gallery image ${index + 1}`} />
+              </Box>
+            )
+          })}
+        </Masonry>
 
         <Lightbox
           index={index}
