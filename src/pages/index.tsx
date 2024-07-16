@@ -23,7 +23,7 @@ const IndexPage = () => {
     <Layout>
       <Home />
       <Services />
-      <Tools />
+      {/* <Tools /> */}
       <AboutUs />
       {/* <Feedback /> */}
       <ContactUs />

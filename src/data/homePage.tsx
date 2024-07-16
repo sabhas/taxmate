@@ -1,10 +1,10 @@
 import {
-  AccountBalance,
   Assessment,
   Assignment as AtlStatusIcon,
   Calculate as CalculatorIcon,
   Description,
   Gavel,
+  MiscellaneousServices,
   AssignmentInd as NtnStatusIcon
 } from "@mui/icons-material"
 import React from "react"
@@ -26,16 +26,16 @@ export const services = [
     icon: <Assessment fontSize="large" />
   },
   {
-    title: "Audit Representation",
+    title: "Audit & Appeals",
     description:
       "Professional representation in the event of an audit, ensuring your interests are protected.",
     icon: <Gavel fontSize="large" />
   },
   {
-    title: "Payroll Services",
+    title: "Other Services",
     description:
-      "Complete payroll services to manage your employees' salaries and deductions efficiently.",
-    icon: <AccountBalance fontSize="large" />
+      "Reconciliation of Wealth, NTN / 7E Certificates, GST / PST (PRA) Matters, Tax Refunds",
+    icon: <MiscellaneousServices fontSize="large" />
   }
 ]
 
