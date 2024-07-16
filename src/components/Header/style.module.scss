@@ -16,8 +16,24 @@
     gap: 10px;
 
     .link {
+      position: relative;
       text-decoration: none;
       color: var(--mui-palette-primary-main);
+      padding: 10px;
+      border-radius: 2rem;
+
+      &:hover {
+        background-color: var(--mui-palette-primary-main);
+        color: var(--mui-palette-primary-contrastText);
+      }
+
+      .star {
+        position: absolute;
+        top: 0px;
+        color: var(--mui-palette-warning-dark);
+        font-size: 0.75em;
+        animation: blink 3s infinite;
+      }
     }
   }
 
@@ -25,5 +41,17 @@
     flex-grow: 1;
     display: flex;
     justify-content: flex-end;
+  }
+}
+
+@keyframes blink {
+  0%,
+  50%,
+  100% {
+    opacity: 1;
+  }
+  25%,
+  75% {
+    opacity: 0;
   }
 }

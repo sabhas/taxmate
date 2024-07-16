@@ -54,7 +54,7 @@ export const Header = () => {
         >
           <NavigationLink label="Home" link="/#home" />
           <NavigationLink label="Calculator" link="/taxCalculator" />
-          <NavigationLink label="News" link="/news" />
+          <NavigationLink label="News" link="/news" showStar />
         </Box>
 
         <Box className={styles.rightSideBox}>
@@ -70,12 +70,18 @@ export const Header = () => {
 type NavigationLinkProps = {
   label: string
   link: string
+  showStar?: boolean
 }
 
-export const NavigationLink = ({ label, link }: NavigationLinkProps) => {
+export const NavigationLink = ({
+  label,
+  link,
+  showStar
+}: NavigationLinkProps) => {
   return (
     <Link to={link} className={styles.link}>
       {label}
+      {showStar && <span className={styles.star}>★</span>}
     </Link>
   )
 }
