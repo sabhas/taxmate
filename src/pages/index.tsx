@@ -164,6 +164,11 @@ const AboutUs = () => {
                 <Typography variant="h6" className={styles.name}>
                   {member.name}
                 </Typography>
+                {member.designation && (
+                  <Typography variant="body2" className={styles.qualification}>
+                    {member.designation}
+                  </Typography>
+                )}
                 <Typography variant="body2" className={styles.qualification}>
                   {member.qualification}
                 </Typography>
