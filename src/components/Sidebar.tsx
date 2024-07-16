@@ -9,10 +9,8 @@ type SidebarProps = {
 
 const links = [
   { label: "Home", href: "/#home" },
-  { label: "Services", href: "/#services" },
-  { label: "Tools", href: "/#tools" },
-  { label: "About Us", href: "/#aboutUs" },
-  { label: "Feedback", href: "/#feedback" }
+  { label: "Calculator", href: "/taxCalculator" },
+  { label: "News", href: "/news" }
 ]
 
 export const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {

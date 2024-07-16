@@ -1,3 +1,5 @@
+import { IGatsbyImageData } from "gatsby-plugin-image"
+
 export enum TaxType {
   Salary = "salary",
   Business = "business",
@@ -22,4 +24,19 @@ export enum IncomeSource {
   Salary = "Salary",
   Business = "Business",
   Property = "Property"
+}
+
+export type ImageData = {
+  node: {
+    relativePath: string
+    childImageSharp: {
+      gatsbyImageData: IGatsbyImageData
+    }
+  }
+}
+
+export type QueryResult = {
+  allFile: {
+    edges: ImageData[]
+  }
 }

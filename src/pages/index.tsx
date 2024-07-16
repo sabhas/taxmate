@@ -16,6 +16,7 @@ import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api"
 import { LoadingButton } from "@mui/lab"
 import emailjs from "@emailjs/browser"
 import { toast } from "react-toastify"
+import { QueryResult } from "../types"
 
 const IndexPage = () => {
   return (
@@ -394,18 +395,3 @@ const query = graphql`
     }
   }
 `
-
-type ImageData = {
-  node: {
-    relativePath: string
-    childImageSharp: {
-      gatsbyImageData: IGatsbyImageData
-    }
-  }
-}
-
-type QueryResult = {
-  allFile: {
-    edges: ImageData[]
-  }
-}

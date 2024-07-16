@@ -53,10 +53,8 @@ export const Header = () => {
           }}
         >
           <NavigationLink label="Home" link="/#home" />
-          <NavigationLink label="Services" link="/#services" />
-          <NavigationLink label="Tools" link="/#tools" />
-          <NavigationLink label="AboutUs" link="/#aboutUs" />
-          <NavigationLink label="Feedback" link="/#feedback" />
+          <NavigationLink label="Calculator" link="/taxCalculator" />
+          <NavigationLink label="News" link="/news" />
         </Box>
 
         <Box className={styles.rightSideBox}>
