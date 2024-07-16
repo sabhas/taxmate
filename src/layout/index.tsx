@@ -5,6 +5,8 @@ import { WhatsAppFloatingButton } from "../components/FloatingWhatsappButton"
 import * as styles from "./style.module.scss"
 import { Helmet } from "react-helmet"
 import { useStaticQuery, graphql } from "gatsby"
+import { Banner } from "../components/Banner"
+import { BANNER_MESSAGE } from "../data/homePage"
 
 const Layout = ({ children }: PropsWithChildren) => {
   const data = useStaticQuery(graphql`
@@ -41,6 +43,7 @@ const Layout = ({ children }: PropsWithChildren) => {
         <meta name="twitter:image" content={`${siteUrl}${image}`} />
       </Helmet>
       <Header />
+      <Banner message={BANNER_MESSAGE} />
       <Box className={styles.main}>
         {children}
         <WhatsAppFloatingButton

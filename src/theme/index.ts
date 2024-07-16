@@ -12,6 +12,9 @@ export const theme = extendTheme({
         },
         info: {
           main: "#3abff8"
+        },
+        warning: {
+          main: "#fdd20b"
         }
       }
     },

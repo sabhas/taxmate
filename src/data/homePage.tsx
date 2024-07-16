@@ -9,6 +9,9 @@ import {
 } from "@mui/icons-material"
 import React from "react"
 
+export const BANNER_MESSAGE =
+  "یاد رہے کہ مالی سال 2023-2024 کے گوشوارہ جمع کروانے کی آخری تاریخ 30 ستمبر 2024 مقرر ہے، مقررہ تاریخ  کے بعد گوشوارہ جمع ہونے کے باوجود لیٹ فائلر تصور ہوں گے اور پراپرٹی کی خرید و فروخت پر %3 کی بجائے %6 ایڈوانس ٹیکس ادا کرنا ہوگا"
+
 export const services = [
   {
     title: "Tax Preparation",

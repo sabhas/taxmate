@@ -1,0 +1,32 @@
+@font-face {
+  font-family: "Noto Nastaliq Urdu";
+  src: url("../../fonts/NotoNastaliqUrdu-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@keyframes move {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.bannerContainer {
+  padding-top: 60px;
+  background-color: var(--mui-palette-primary-main);
+  color: var(--mui-palette-warning-main);
+  overflow: hidden;
+  white-space: nowrap;
+  display: flex;
+
+  .bannerText {
+    padding: 10px 0;
+    animation: move 45s linear infinite;
+    white-space: nowrap;
+    font-family: "Noto Nastaliq Urdu", sans-serif;
+    word-spacing: 0.2rem;
+  }
+}
