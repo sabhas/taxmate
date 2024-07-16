@@ -25,7 +25,7 @@ const IndexPage = () => {
       <Services />
       <Tools />
       <AboutUs />
-      <Feedback />
+      {/* <Feedback /> */}
       <ContactUs />
     </Layout>
   )
@@ -187,10 +187,10 @@ const AboutUs = () => {
 const Feedback = () => (
   <Box className={styles.feedbackContainer} id="feedback">
     <Typography variant="h4" align="center" color="primary" gutterBottom>
-      Customers Feedback
+      Clients Feedback
     </Typography>
     <Typography variant="h6" align="center" color="textSecondary" gutterBottom>
-      What Customers Think About Taxmate
+      What Our Clients Think About Taxmate
     </Typography>
     <Carousel
       infinite
