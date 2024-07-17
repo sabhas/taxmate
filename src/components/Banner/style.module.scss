@@ -22,7 +22,8 @@
   white-space: nowrap;
   display: flex;
   position: fixed;
-  z-index: 1;
+  z-index: 100;
+  width: 100%;
 
   .bannerText {
     padding: 10px 0;
