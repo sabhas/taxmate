@@ -103,7 +103,7 @@ const AmountInput = ({ label, value, onChange }: AmountInputProps) => {
   )
 }
 
-const TaxYears = [2025, 2024, 2023, 2022, 2021, 2020]
+const TaxYears = [2026, 2025, 2024, 2023, 2022, 2021, 2020]
 
 type TaxYearSelectProps = {
   value: number
@@ -177,12 +177,14 @@ const TaxCalculator = () => {
   const [businessIncome, setBusinessIncome] = useState(0)
   const [shareFromAop, setShareFromAop] = useState(0)
   const [propertyIncome, setPropertyIncome] = useState(0)
+  const [pensionIncome, setPensionIncome] = useState(0)
   const [turnover, setTurnover] = useState(0)
   const [selectedSector, setSelectedSector] = useState(Sectors[0])
   const [taxYear, setTaxYear] = useState(TaxYears[0])
   const [totalTax, setTotalTax] = useState(0)
   const [taxDetail, setTaxDetail] = useState({
     propertyTax: 0,
+    pensionTax: 0,
     grossTax: 0,
     taxCredit: 0,
     netTax: 0,
@@ -201,6 +203,7 @@ const TaxCalculator = () => {
     setBusinessIncome(0)
     setShareFromAop(0)
     setPropertyIncome(0)
+    setPensionIncome(0)
     setTurnover(0)
     setTotalTax(0)
   }
@@ -253,9 +256,13 @@ const TaxCalculator = () => {
       turnoverTax = turnover * turnoverTaxRate
     }
 
-    setTotalTax(Math.max(netTax, turnoverTax) + propertyTax)
+    // pension is taxed separately. From 2026, 5% on the amount exceeding 10M.
+    const pensionTax = calculateTax(pensionIncome, taxYear, TaxType.Pension)
+
+    setTotalTax(Math.max(netTax, turnoverTax) + propertyTax + pensionTax)
     setTaxDetail({
       propertyTax,
+      pensionTax,
       grossTax,
       taxCredit,
       netTax,
@@ -284,6 +291,11 @@ const TaxCalculator = () => {
         label="Property Income"
         value={propertyIncome}
         onChange={setPropertyIncome}
+      />
+      <AmountInput
+        label="Pension Income"
+        value={pensionIncome}
+        onChange={setPensionIncome}
       />
       <AmountInput
         label="Annual Turnover"
@@ -335,6 +347,10 @@ const TaxCalculator = () => {
             <TableRow>
               <TableCell>Turnover Tax</TableCell>
               <TableCell>{formatNumber(taxDetail.turnoverTax)}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Pension Tax</TableCell>
+              <TableCell>{formatNumber(taxDetail.pensionTax)}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell sx={{ fontWeight: "bold" }}>Total Tax</TableCell>

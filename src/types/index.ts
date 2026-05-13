@@ -3,7 +3,8 @@ import { IGatsbyImageData } from "gatsby-plugin-image"
 export enum TaxType {
   Salary = "salary",
   Business = "business",
-  Property = "property"
+  Property = "property",
+  Pension = "pension"
 }
 
 export interface TaxBracket {
@@ -23,7 +24,8 @@ export interface Sector {
 export enum IncomeSource {
   Salary = "Salary",
   Business = "Business",
-  Property = "Property"
+  Property = "Property",
+  Pension = "Pension"
 }
 
 export type ImageData = {

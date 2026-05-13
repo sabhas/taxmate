@@ -67,6 +67,14 @@ const salaryTaxBrackets: { [key: number]: TaxBracket[] } = {
     { limit: 3200000, rate: 0.25 },
     { limit: 4100000, rate: 0.3 },
     { limit: Infinity, rate: 0.35 }
+  ],
+  2026: [
+    { limit: 600000, rate: 0 },
+    { limit: 1200000, rate: 0.01 },
+    { limit: 2200000, rate: 0.11 },
+    { limit: 3200000, rate: 0.23 },
+    { limit: 4100000, rate: 0.3 },
+    { limit: Infinity, rate: 0.35 }
   ]
 }
 
@@ -127,6 +135,21 @@ const businessTaxBrackets: { [key: number]: TaxBracket[] } = {
     { limit: 3200000, rate: 0.3 },
     { limit: 5600000, rate: 0.4 },
     { limit: Infinity, rate: 0.45 }
+  ],
+  2026: [
+    { limit: 600000, rate: 0 },
+    { limit: 1200000, rate: 0.15 },
+    { limit: 1600000, rate: 0.2 },
+    { limit: 3200000, rate: 0.3 },
+    { limit: 5600000, rate: 0.4 },
+    { limit: Infinity, rate: 0.45 }
+  ]
+}
+
+const pensionTaxBrackets: { [key: number]: TaxBracket[] } = {
+  2026: [
+    { limit: 10000000, rate: 0 },
+    { limit: Infinity, rate: 0.05 }
   ]
 }
 
@@ -173,8 +196,16 @@ export const calculateTax = (
           ? propertyTaxBrackets[taxYear]
           : businessTaxBrackets[taxYear]
       break
+    case TaxType.Pension:
+      brackets = pensionTaxBrackets[taxYear]
+      break
     default:
       throw new Error("Invalid tax type")
+  }
+
+  // pension tax brackets are only defined from 2026 onwards
+  if (!brackets) {
+    return 0
   }
 
   let tax = 0
@@ -213,8 +244,16 @@ export const calculateIncome = (
           ? propertyTaxBrackets[taxYear]
           : businessTaxBrackets[taxYear]
       break
+    case IncomeSource.Pension:
+      brackets = pensionTaxBrackets[taxYear]
+      break
     default:
       throw new Error("Invalid tax type")
+  }
+
+  // pension tax brackets are only defined from 2026 onwards
+  if (!brackets) {
+    return 0
   }
 
   let income = 0
