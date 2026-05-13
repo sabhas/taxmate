@@ -3,21 +3,27 @@ import {
   Autocomplete,
   Box,
   Button,
-  FormControl,
-  InputLabel,
+  InputAdornment,
   MenuItem,
   Paper,
-  Select,
   Tab,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
   Tabs,
   TextField,
   Typography
 } from "@mui/material"
+import {
+  AccountBalance,
+  ArrowForward,
+  AttachMoney,
+  Business,
+  Calculate,
+  CalendarMonth,
+  Receipt,
+  RestartAlt,
+  Savings,
+  TrendingUp,
+  Work
+} from "@mui/icons-material"
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react"
 import Layout from "../layout"
 import * as styles from "../scss/taxCalculator.module.scss"
@@ -38,34 +44,58 @@ export default () => {
 
   return (
     <Layout>
-      <Box className={styles.container}>
-        <Typography variant="h4" color="primary" gutterBottom>
-          Tax Calculator
-        </Typography>
-        <Paper elevation={3}>
-          <TabContext value={tabValue}>
-            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-              <Tabs
-                variant="fullWidth"
-                value={tabValue}
-                onChange={(e, value) => setTabValue(value)}
-              >
-                <Tab label="Tax" value={"Tax"} />
-                <Tab label="Income" value={"Income"} />
-              </Tabs>
-            </Box>
-            <TabPanel value="Tax">
-              <Box className={styles.inputWrapper}>
+      <Box className={styles.pageWrapper}>
+        <Box className={styles.container}>
+          <Box className={styles.heroSection}>
+            <Typography variant="h4" className={styles.title}>
+              Tax Calculator
+            </Typography>
+            <Typography className={styles.subtitle}>
+              Calculate your Pakistan income tax quickly and accurately
+            </Typography>
+          </Box>
+
+          <Paper className={styles.tabsCard} elevation={0}>
+            <TabContext value={tabValue}>
+              <Box className={styles.tabsHeader}>
+                <Tabs
+                  variant="fullWidth"
+                  value={tabValue}
+                  onChange={(_, value) => setTabValue(value)}
+                  classes={{ indicator: styles.tabIndicator }}
+                >
+                  <Tab
+                    icon={<Calculate fontSize="small" />}
+                    iconPosition="start"
+                    label="Tax from Income"
+                    value="Tax"
+                    classes={{
+                      root: styles.tabRoot,
+                      selected: styles.tabSelected
+                    }}
+                  />
+                  <Tab
+                    icon={<TrendingUp fontSize="small" />}
+                    iconPosition="start"
+                    label="Income from Tax"
+                    value="Income"
+                    classes={{
+                      root: styles.tabRoot,
+                      selected: styles.tabSelected
+                    }}
+                  />
+                </Tabs>
+              </Box>
+
+              <TabPanel value="Tax" className={styles.panelContent}>
                 <TaxCalculator />
-              </Box>
-            </TabPanel>
-            <TabPanel value="Income">
-              <Box className={styles.inputWrapper}>
+              </TabPanel>
+              <TabPanel value="Income" className={styles.panelContent}>
                 <IncomeCalculator />
-              </Box>
-            </TabPanel>
-          </TabContext>
-        </Paper>
+              </TabPanel>
+            </TabContext>
+          </Paper>
+        </Box>
       </Box>
     </Layout>
   )
@@ -83,9 +113,10 @@ type AmountInputProps = {
   label: string
   value: number
   onChange: Dispatch<SetStateAction<number>>
+  icon?: React.ReactNode
 }
 
-const AmountInput = ({ label, value, onChange }: AmountInputProps) => {
+const AmountInput = ({ label, value, onChange, icon }: AmountInputProps) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const unformattedValue = unformatNumber(event.target.value)
     onChange(unformattedValue)
@@ -98,7 +129,16 @@ const AmountInput = ({ label, value, onChange }: AmountInputProps) => {
       type="text"
       value={value ? formatNumber(value) : ""}
       onChange={handleChange}
-      margin="normal"
+      className={styles.styledInput}
+      InputProps={{
+        startAdornment: icon ? (
+          <InputAdornment position="start">{icon}</InputAdornment>
+        ) : (
+          <InputAdornment position="start">
+            <span className={styles.inputPrefix}>Rs</span>
+          </InputAdornment>
+        )
+      }}
     />
   )
 }
@@ -111,21 +151,27 @@ type TaxYearSelectProps = {
 }
 
 const TaxYearSelect = ({ value, onChange }: TaxYearSelectProps) => (
-  <FormControl fullWidth margin="normal">
-    <InputLabel id="tax-year-select-label">Tax Year</InputLabel>
-    <Select
-      labelId="tax-year-select-label"
-      label="Tax Year"
-      value={value}
-      onChange={(e) => onChange(+e.target.value)}
-    >
-      {TaxYears.map((year) => (
-        <MenuItem key={year} value={year}>
-          {year}
-        </MenuItem>
-      ))}
-    </Select>
-  </FormControl>
+  <TextField
+    select
+    fullWidth
+    label="Tax Year"
+    value={value}
+    onChange={(e) => onChange(+e.target.value)}
+    className={styles.styledInput}
+    InputProps={{
+      startAdornment: (
+        <InputAdornment position="start">
+          <CalendarMonth fontSize="small" sx={{ color: "#9ca3af" }} />
+        </InputAdornment>
+      )
+    }}
+  >
+    {TaxYears.map((year) => (
+      <MenuItem key={year} value={year}>
+        {year}
+      </MenuItem>
+    ))}
+  </TextField>
 )
 
 type IncomeSourceSelectProps = {
@@ -134,21 +180,27 @@ type IncomeSourceSelectProps = {
 }
 
 const IncomeSourceSelect = ({ value, onChange }: IncomeSourceSelectProps) => (
-  <FormControl fullWidth margin="normal">
-    <InputLabel id="income-source-select-label">Income Source</InputLabel>
-    <Select
-      labelId="income-source-select-label"
-      label="Income Source"
-      value={value}
-      onChange={(e) => onChange(e.target.value as IncomeSource)}
-    >
-      {Object.values(IncomeSource).map((source) => (
-        <MenuItem key={source} value={source}>
-          {source}
-        </MenuItem>
-      ))}
-    </Select>
-  </FormControl>
+  <TextField
+    select
+    fullWidth
+    label="Income Source"
+    value={value}
+    onChange={(e) => onChange(e.target.value as IncomeSource)}
+    className={styles.styledInput}
+    InputProps={{
+      startAdornment: (
+        <InputAdornment position="start">
+          <Work fontSize="small" sx={{ color: "#9ca3af" }} />
+        </InputAdornment>
+      )
+    }}
+  >
+    {Object.values(IncomeSource).map((source) => (
+      <MenuItem key={source} value={source}>
+        {source}
+      </MenuItem>
+    ))}
+  </TextField>
 )
 
 type SectorSelectProps = {
@@ -166,7 +218,22 @@ const SectorSelect = ({ selectedSector, onChange }: SectorSelectProps) => {
       value={selectedSector}
       onChange={(_: any, newValue: Sector) => onChange(newValue)}
       renderInput={(params) => (
-        <TextField {...params} label="Sector" margin="normal" fullWidth />
+        <TextField
+          {...params}
+          label="Sector"
+          className={styles.styledInput}
+          InputProps={{
+            ...params.InputProps,
+            startAdornment: (
+              <>
+                <InputAdornment position="start">
+                  <Business fontSize="small" sx={{ color: "#9ca3af" }} />
+                </InputAdornment>
+                {params.InputProps.startAdornment}
+              </>
+            )
+          }}
+        />
       )}
     />
   )
@@ -182,6 +249,7 @@ const TaxCalculator = () => {
   const [selectedSector, setSelectedSector] = useState(Sectors[0])
   const [taxYear, setTaxYear] = useState(TaxYears[0])
   const [totalTax, setTotalTax] = useState(0)
+  const [hasCalculated, setHasCalculated] = useState(false)
   const [taxDetail, setTaxDetail] = useState({
     propertyTax: 0,
     pensionTax: 0,
@@ -192,10 +260,7 @@ const TaxCalculator = () => {
   })
 
   useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    })
+    window.scrollTo({ top: 0, behavior: "smooth" })
   }, [])
 
   const handleReset = () => {
@@ -206,6 +271,7 @@ const TaxCalculator = () => {
     setPensionIncome(0)
     setTurnover(0)
     setTotalTax(0)
+    setHasCalculated(false)
   }
 
   const handleCalculateTax = () => {
@@ -219,8 +285,6 @@ const TaxCalculator = () => {
     if (taxYear <= 2021) {
       propertyTax = calculateTax(propertyIncome, taxYear, TaxType.Property)
     } else {
-      // from 2022 property tax was clubbed in to general tax (business)
-      // also 20% of the gross property income can be deducted for repair and maintenance costs.
       const netPropertyIncome = propertyIncome * 0.8
       netBusinessIncome += netPropertyIncome
     }
@@ -228,14 +292,12 @@ const TaxCalculator = () => {
     const totalIncome = salaryIncome + netBusinessIncome
 
     if (salaryIncome > 0.75 * totalIncome) {
-      // apply salary tax rate
       salaryTax = calculateTax(
         salaryIncome + netBusinessIncome,
         taxYear,
         TaxType.Salary
       )
     } else {
-      // Apply business tax rate
       businessTax = calculateTax(
         netBusinessIncome + salaryIncome,
         taxYear,
@@ -250,13 +312,11 @@ const TaxCalculator = () => {
 
     const netTax = grossTax - taxCredit
 
-    // consider turnover tax only if it is more than or equal to 100 million
     if (turnover >= 100000000) {
       const turnoverTaxRate = selectedSector.taxRate[taxYear]
       turnoverTax = turnover * turnoverTaxRate
     }
 
-    // pension is taxed separately. From 2026, 5% on the amount exceeding 10M.
     const pensionTax = calculateTax(pensionIncome, taxYear, TaxType.Pension)
 
     setTotalTax(Math.max(netTax, turnoverTax) + propertyTax + pensionTax)
@@ -268,97 +328,137 @@ const TaxCalculator = () => {
       netTax,
       turnoverTax
     })
+    setHasCalculated(true)
   }
+
+  const resultRows = [
+    { label: "Gross Tax", value: taxDetail.grossTax },
+    { label: "Tax Credit", value: taxDetail.taxCredit },
+    { label: "Net Tax", value: taxDetail.netTax },
+    { label: "Turnover Tax", value: taxDetail.turnoverTax },
+    { label: "Property Tax", value: taxDetail.propertyTax },
+    { label: "Pension Tax", value: taxDetail.pensionTax }
+  ]
 
   return (
     <>
-      <AmountInput
-        label="Salary Income"
-        value={salaryIncome}
-        onChange={setSalaryIncome}
-      />
-      <AmountInput
-        label="Business Income"
-        value={businessIncome}
-        onChange={setBusinessIncome}
-      />
-      <AmountInput
-        label="Share from AOP"
-        value={shareFromAop}
-        onChange={setShareFromAop}
-      />
-      <AmountInput
-        label="Property Income"
-        value={propertyIncome}
-        onChange={setPropertyIncome}
-      />
-      <AmountInput
-        label="Pension Income"
-        value={pensionIncome}
-        onChange={setPensionIncome}
-      />
-      <AmountInput
-        label="Annual Turnover"
-        value={turnover}
-        onChange={setTurnover}
-      />
-      {turnover > 0 && (
-        <SectorSelect
-          selectedSector={selectedSector}
-          onChange={setSelectedSector}
-        />
+      <Box className={styles.formSection}>
+        <Typography className={styles.sectionLabel}>
+          <CalendarMonth className={styles.sectionIcon} />
+          Tax Year
+        </Typography>
+        <Box className={styles.fieldsGrid}>
+          <TaxYearSelect value={taxYear} onChange={setTaxYear} />
+        </Box>
+      </Box>
+
+      <Box className={styles.formSection}>
+        <Typography className={styles.sectionLabel}>
+          <AttachMoney className={styles.sectionIcon} />
+          Income Sources
+        </Typography>
+        <Box className={styles.fieldsGrid}>
+          <AmountInput
+            label="Salary Income"
+            value={salaryIncome}
+            onChange={setSalaryIncome}
+          />
+          <AmountInput
+            label="Business Income"
+            value={businessIncome}
+            onChange={setBusinessIncome}
+          />
+          <AmountInput
+            label="Share from AOP"
+            value={shareFromAop}
+            onChange={setShareFromAop}
+          />
+          <AmountInput
+            label="Property Income"
+            value={propertyIncome}
+            onChange={setPropertyIncome}
+          />
+          {taxYear >= 2026 && (
+            <AmountInput
+              label="Pension Income"
+              value={pensionIncome}
+              onChange={setPensionIncome}
+            />
+          )}
+        </Box>
+      </Box>
+
+      <Box className={styles.formSection}>
+        <Typography className={styles.sectionLabel}>
+          <AccountBalance className={styles.sectionIcon} />
+          Turnover
+        </Typography>
+        <Box className={styles.fieldsGrid}>
+          <AmountInput
+            label="Annual Turnover"
+            value={turnover}
+            onChange={setTurnover}
+          />
+          {turnover > 0 && (
+            <SectorSelect
+              selectedSector={selectedSector}
+              onChange={setSelectedSector}
+            />
+          )}
+        </Box>
+      </Box>
+
+      <Box className={styles.buttonGroup}>
+        <Button
+          variant="contained"
+          className={styles.calculateBtn}
+          onClick={handleCalculateTax}
+          endIcon={<ArrowForward />}
+          disableElevation
+        >
+          Calculate Tax
+        </Button>
+        {hasCalculated && (
+          <Button
+            variant="text"
+            className={styles.resetBtn}
+            onClick={handleReset}
+            startIcon={<RestartAlt />}
+          >
+            Reset
+          </Button>
+        )}
+      </Box>
+
+      {hasCalculated && (
+        <Box className={styles.resultsSection}>
+          <Box className={styles.resultsHeader}>
+            <Box className={styles.resultsIcon}>
+              <Receipt fontSize="small" />
+            </Box>
+            <Typography className={styles.resultsTitle}>
+              Tax Breakdown
+            </Typography>
+          </Box>
+
+          <Paper className={styles.resultsCard} elevation={0}>
+            {resultRows.map(({ label, value }) => (
+              <Box key={label} className={styles.resultRow}>
+                <Typography className={styles.resultLabel}>{label}</Typography>
+                <Typography className={styles.resultValue}>
+                  Rs {formatNumber(value)}
+                </Typography>
+              </Box>
+            ))}
+            <Box className={`${styles.resultRow} ${styles.totalRow}`}>
+              <Typography className={styles.resultLabel}>Total Tax</Typography>
+              <Typography className={styles.resultValue}>
+                Rs {formatNumber(totalTax)}
+              </Typography>
+            </Box>
+          </Paper>
+        </Box>
       )}
-      <TaxYearSelect value={taxYear} onChange={setTaxYear} />
-      <Button variant="contained" color="primary" onClick={handleCalculateTax}>
-        Calculate Tax
-      </Button>
-      <Button
-        variant="contained"
-        sx={{
-          backgroundColor: "darkred",
-          marginTop: "10px"
-        }}
-        onClick={handleReset}
-      >
-        Reset
-      </Button>
-      <Typography variant="h5" sx={{ marginTop: "10px" }}>
-        Tax Details
-      </Typography>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableBody>
-            <TableRow>
-              <TableCell>Property Tax</TableCell>
-              <TableCell>{formatNumber(taxDetail.propertyTax)}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Gross Tax</TableCell>
-              <TableCell>{formatNumber(taxDetail.grossTax)}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Tax Credit</TableCell>
-              <TableCell>{formatNumber(taxDetail.taxCredit)}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Net Tax</TableCell>
-              <TableCell>{formatNumber(taxDetail.netTax)}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Turnover Tax</TableCell>
-              <TableCell>{formatNumber(taxDetail.turnoverTax)}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Pension Tax</TableCell>
-              <TableCell>{formatNumber(taxDetail.pensionTax)}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell sx={{ fontWeight: "bold" }}>Total Tax</TableCell>
-              <TableCell>{formatNumber(totalTax)}</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </TableContainer>
     </>
   )
 }
@@ -368,22 +468,78 @@ const IncomeCalculator = () => {
   const [incomeSource, setIncomeSource] = useState(IncomeSource.Salary)
   const [taxYear, setTaxYear] = useState(TaxYears[0])
   const [income, setIncome] = useState(0)
+  const [hasCalculated, setHasCalculated] = useState(false)
 
   const handleCalculate = () => {
     setIncome(calculateIncome(totalTax, taxYear, incomeSource))
+    setHasCalculated(true)
+  }
+
+  const handleReset = () => {
+    setTotalTax(0)
+    setIncome(0)
+    setHasCalculated(false)
   }
 
   return (
     <>
-      <AmountInput label="Total Tax" value={totalTax} onChange={setTotalTax} />
-      <IncomeSourceSelect value={incomeSource} onChange={setIncomeSource} />
-      <TaxYearSelect value={taxYear} onChange={setTaxYear} />
-      <Button variant="contained" color="primary" onClick={handleCalculate}>
-        Calculate
-      </Button>
-      <Typography variant="h5" sx={{ marginTop: "10px" }}>
-        Income: {formatNumber(income)}
-      </Typography>
+      <Box className={styles.formSection}>
+        <Typography className={styles.sectionLabel}>
+          <CalendarMonth className={styles.sectionIcon} />
+          Tax Year
+        </Typography>
+        <Box className={styles.fieldsGrid}>
+          <TaxYearSelect value={taxYear} onChange={setTaxYear} />
+        </Box>
+      </Box>
+
+      <Box className={styles.formSection}>
+        <Typography className={styles.sectionLabel}>
+          <Savings className={styles.sectionIcon} />
+          Reverse Calculation
+        </Typography>
+        <Box className={styles.fieldsGrid}>
+          <AmountInput
+            label="Total Tax Paid"
+            value={totalTax}
+            onChange={setTotalTax}
+          />
+          <IncomeSourceSelect value={incomeSource} onChange={setIncomeSource} />
+        </Box>
+      </Box>
+
+      <Box className={styles.buttonGroup}>
+        <Button
+          variant="contained"
+          className={styles.calculateBtn}
+          onClick={handleCalculate}
+          endIcon={<ArrowForward />}
+          disableElevation
+        >
+          Calculate Income
+        </Button>
+        {hasCalculated && (
+          <Button
+            variant="text"
+            className={styles.resetBtn}
+            onClick={handleReset}
+            startIcon={<RestartAlt />}
+          >
+            Reset
+          </Button>
+        )}
+      </Box>
+
+      {hasCalculated && (
+        <Box className={styles.incomeResult}>
+          <Typography className={styles.incomeLabel}>
+            Estimated Income
+          </Typography>
+          <Typography className={styles.incomeValue}>
+            Rs {formatNumber(income)}
+          </Typography>
+        </Box>
+      )}
     </>
   )
 }
