@@ -4,6 +4,7 @@ import {
   Calculate as CalculatorIcon,
   Description,
   Gavel,
+  Home as PropertyIcon,
   MiscellaneousServices,
   AssignmentInd as NtnStatusIcon,
 } from "@mui/icons-material";
@@ -46,6 +47,13 @@ export const tools = [
       "Use our advanced calculator to compute your tax liabilities quickly and accurately.",
     icon: <CalculatorIcon fontSize="large" />,
     link: "/taxCalculator",
+  },
+  {
+    title: "Property Transfer Fees",
+    description:
+      "Calculate Punjab property transfer fees for E-Registration including all taxes and duties.",
+    icon: <PropertyIcon fontSize="large" />,
+    link: "/propertyTransferFees",
   },
   {
     title: "NTN Status",

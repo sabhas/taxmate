@@ -54,6 +54,7 @@ export const Header = () => {
         >
           <NavigationLink label='Home' link='/#home' />
           <NavigationLink label='Calculator' link='/taxCalculator' />
+          <NavigationLink label='Property Transfer Fees' link='/propertyTransferFees' />
           <NavigationLink label='News' link='/news' showStar />
         </Box>
 
