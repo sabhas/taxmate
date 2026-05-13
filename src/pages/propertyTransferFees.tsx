@@ -58,7 +58,7 @@ export default () => {
               Property Transfer Fee Calculator
             </Typography>
             <Typography className={styles.subtitle}>
-              Calculate Punjab property transfer fees for E-Registration
+              Calculate Punjab property transfer fees for both residential and agricultural land
             </Typography>
           </Box>
 
