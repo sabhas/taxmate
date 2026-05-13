@@ -43,6 +43,9 @@
     "sass": "^1.77.6",
     "yet-another-react-lightbox": "3.21.0"
   },
+  "overrides": {
+    "msgpackr": "^1.11.2"
+  },
   "devDependencies": {
     "@types/node": "^20.11.19",
     "@types/react": "^18.2.55",
