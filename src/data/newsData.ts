@@ -95,7 +95,7 @@ export const newsItems: NewsItem[] = [
     content:
       'The Active Taxpayer List (ATL) is published by FBR and includes all taxpayers who have filed their income tax return for the latest tax year. Benefits of being on ATL include: reduced withholding tax rates, lower tax on property transactions, and reduced tax on vehicle registration. File your return on time to stay on the ATL.',
     category: 'tip',
-    date: '2025-06-20',
+    date: '2026-05-14',
     icon: '✅'
   },
   {
