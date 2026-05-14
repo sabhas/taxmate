@@ -81,13 +81,13 @@ export const members = [
     name: "Muhammad Shahid Mehmood",
     qualification: "MBA (Finance & IT), LLB , B.Com, ITP",
     description: "",
-    image: "MSM.jpg",
+    image: "MSM.png",
   },
   {
     name: "Muhammad Musab Ghani",
     qualification: "LLB",
     description: "",
-    image: "MMG.jpeg",
+    image: "MMG.png",
   },
   // Add more members as needed
 ];

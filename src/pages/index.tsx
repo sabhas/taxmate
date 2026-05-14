@@ -158,7 +158,10 @@ const AboutUs = () => {
                     image={image}
                     alt={member.name}
                     style={{ borderRadius: "50%", marginBottom: "15px" }}
-                    imgStyle={{ objectFit: "cover" }}
+                    imgStyle={{
+                      objectFit: "cover",
+                      objectPosition: "center top"
+                    }}
                   />
                 )}
                 <Typography variant="h6" className={styles.name}>
