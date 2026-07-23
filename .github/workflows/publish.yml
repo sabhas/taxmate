@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Build App and Push gh-pages Branch
 
 on:
   push:
@@ -12,29 +12,36 @@ env:
   GATSBY_EMAIL_ACCOUNT_ID: ${{ secrets.VITE_APP_EMAIL_ACCOUNT_ID }}
 
 jobs:
-  build:
+  create_build_and_publish:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/iron
-      - run: npm ci
-      - run: npm run build
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./public
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
     permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      contents: write
+
+    strategy:
+      matrix:
+        node-version: [lts/iron]
+
     steps:
-      - uses: actions/deploy-pages@v4
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: create build
+        run: npm run build
+
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@4.1.0
+        with:
+          server: ${{ secrets.ftp_server }}
+          username: ${{ secrets.ftp_name }}
+          password: ${{ secrets.ftp_password }}
+          dangerous-clean-slate: true
+          local-dir: ./public/
