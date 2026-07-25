@@ -5,3 +5,9 @@ src/gatsby-types.d.ts
 .env
 src/images/.DS_Store
 .DS_Store
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
