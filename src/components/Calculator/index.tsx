@@ -398,7 +398,7 @@ export const tabSx = {
     },
     "&.Mui-selected": {
       color: "#4caf50 !important",
-      background: "background.paper !important",
+      background: "var(--mui-palette-background-paper) !important",
       boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
     }
   }
