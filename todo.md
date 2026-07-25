@@ -1,4 +1,4 @@
 - [x] install necessary npm packages
 - [x] create component folder
 - [x] create layout component
-- [ ] handle navigation from sidebar
+- [x] handle navigation from sidebar

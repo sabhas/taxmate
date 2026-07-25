@@ -7,31 +7,46 @@ import {
   Paper,
   TextField,
   Typography
-} from '@mui/material'
+} from "@mui/material"
 import SearchIcon from '@mui/icons-material/Search'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh'
-import React, { useState, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Layout from '../layout'
 import { categories, newsItems, NewsItem } from '../data/newsData'
 import * as styles from '../scss/news.module.scss'
+
+// Sort news by date descending (most recent first)
+const sortedNews = [...newsItems].sort(
+  (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+)
+
+const useDebouncedValue = <T,>(value: T, delay = 200): T => {
+  const [debounced, setDebounced] = useState(value)
+  useEffect(() => {
+    const id = setTimeout(() => setDebounced(value), delay)
+    return () => clearTimeout(id)
+  }, [value, delay])
+  return debounced
+}
 
 export default () => {
   const [activeCategory, setActiveCategory] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [expandedId, setExpandedId] = useState<number | null>(null)
+  const debouncedQuery = useDebouncedValue(searchQuery)
 
   const filteredNews = useMemo(() => {
-    return newsItems.filter((item) => {
+    return sortedNews.filter((item) => {
       const matchesCategory =
         activeCategory === 'all' || item.category === activeCategory
       const matchesSearch =
-        searchQuery === '' ||
-        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.summary.toLowerCase().includes(searchQuery.toLowerCase())
+        debouncedQuery === '' ||
+        item.title.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
+        item.summary.toLowerCase().includes(debouncedQuery.toLowerCase())
       return matchesCategory && matchesSearch
     })
-  }, [activeCategory, searchQuery])
+  }, [activeCategory, debouncedQuery])
 
   const handleExpand = (id: number) => {
     setExpandedId(expandedId === id ? null : id)
@@ -75,6 +90,7 @@ export default () => {
             size='small'
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            aria-label='Search news'
             className={styles.searchField}
             InputProps={{
               startAdornment: (
@@ -85,7 +101,11 @@ export default () => {
             }}
           />
 
-          <Box className={styles.categoryFilters}>
+          <Box
+            className={styles.categoryFilters}
+            role='group'
+            aria-label='Filter news by category'
+          >
             {categories.map((cat) => (
               <Chip
                 key={cat.key}
@@ -93,6 +113,7 @@ export default () => {
                 onClick={() => setActiveCategory(cat.key)}
                 variant={activeCategory === cat.key ? 'filled' : 'outlined'}
                 color={activeCategory === cat.key ? 'primary' : 'default'}
+                aria-pressed={activeCategory === cat.key}
                 className={styles.categoryChip}
               />
             ))}
@@ -115,11 +136,13 @@ export default () => {
                 key={item.id}
                 className={`${styles.newsCard} ${item.important ? styles.important : ''}`}
                 elevation={expandedId === item.id ? 6 : 2}
-                style={{ animationDelay: `${index * 0.08}s` }}
+                style={{ animationDelay: `${Math.min(index, 6) * 0.08}s` }}
               >
                 <Box className={styles.cardHeader}>
                   <Box className={styles.iconWrapper}>
-                    <span className={styles.emoji}>{item.icon}</span>
+                    <span className={styles.emoji} aria-hidden='true'>
+                      {item.icon}
+                    </span>
                   </Box>
                   <Box className={styles.cardMeta}>
                     <Chip
@@ -139,7 +162,10 @@ export default () => {
                     </Typography>
                   </Box>
                   {item.important && (
-                    <Box className={styles.importantBadge}>
+                    <Box
+                      className={styles.importantBadge}
+                      aria-label='Important update'
+                    >
                       <PriorityHighIcon fontSize='small' />
                     </Box>
                   )}
@@ -162,6 +188,12 @@ export default () => {
                 <Box className={styles.cardActions}>
                   <IconButton
                     onClick={() => handleExpand(item.id)}
+                    aria-label={
+                      expandedId === item.id
+                        ? `Show less for ${item.title}`
+                        : `Read more about ${item.title}`
+                    }
+                    aria-expanded={expandedId === item.id}
                     className={`${styles.expandButton} ${expandedId === item.id ? styles.expanded : ''}`}
                     size='small'
                   >
@@ -171,6 +203,14 @@ export default () => {
                     variant='caption'
                     className={styles.readMoreLabel}
                     onClick={() => handleExpand(item.id)}
+                    role='button'
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        handleExpand(item.id)
+                      }
+                    }}
                   >
                     {expandedId === item.id ? 'Show less' : 'Read more'}
                   </Typography>

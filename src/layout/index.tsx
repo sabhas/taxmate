@@ -2,6 +2,7 @@ import React, { PropsWithChildren } from "react"
 import { Header } from "../components/Header"
 import { Box } from "@mui/material"
 import { WhatsAppFloatingButton } from "../components/FloatingWhatsappButton"
+import { Footer } from "../components/Footer"
 import * as styles from "./style.module.scss"
 import { Helmet } from "react-helmet"
 import { useStaticQuery, graphql } from "gatsby"
@@ -45,12 +46,13 @@ const Layout = ({ children }: PropsWithChildren) => {
       <Header />
       <Banner message={BANNER_MESSAGE} />
       <Box className={styles.main}>
-        {children}
-        <WhatsAppFloatingButton
-          phoneNumber="+923336844170"
-          message="I'd like to get some help regarding tax matter"
-        />
+        <Box sx={{ flex: 1 }}>{children}</Box>
+        <Footer />
       </Box>
+      <WhatsAppFloatingButton
+        phoneNumber="+923336844170"
+        message="I'd like to get some help regarding tax matters"
+      />
     </>
   )
 }

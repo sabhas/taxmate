@@ -1,4 +1,12 @@
-import { Avatar, Box, Grid, Paper, TextField, Typography } from "@mui/material"
+import {
+  Avatar,
+  Box,
+  Button,
+  Grid,
+  Paper,
+  TextField,
+  Typography
+} from "@mui/material"
 import { graphql, navigate, useStaticQuery } from "gatsby"
 import {
   GatsbyImage,
@@ -6,28 +14,30 @@ import {
   StaticImage,
   getImage
 } from "gatsby-plugin-image"
-import React, { useCallback, useRef, useState } from "react"
-import Carousel from "react-multi-carousel"
-import "react-multi-carousel/lib/styles.css"
-import { feedbacks, members, services, tools } from "../data/homePage"
+import React, { Suspense, lazy, useRef, useState } from "react"
+import { members, services, tools } from "../data/homePage"
 import Layout from "../layout"
 import * as styles from "../scss/index.module.scss"
-import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api"
 import { LoadingButton } from "@mui/lab"
 import emailjs from "@emailjs/browser"
 import { toast } from "react-toastify"
 import { QueryResult } from "../types"
 
+// Lazy-load the Google Map so visitors who never reach the contact form
+// don't pay the cost of loading the Maps API script.
+const Map = lazy(() => import("../components/Map"))
+
+const RECAPTCHA_SITE_KEY = process.env.GATSBY_RECAPTCHA_SITE_KEY as string
+
 const IndexPage = () => {
   return (
-    <Layout>
+    <>
       <Home />
       <Services />
-      {/* <Tools /> */}
+      <Tools />
       <AboutUs />
-      {/* <Feedback /> */}
       <ContactUs />
-    </Layout>
+    </>
   )
 }
 
@@ -35,16 +45,22 @@ export const Head = () => {
   return (
     <>
       <title>Taxmate</title>
-      <script
-        src="https://www.google.com/recaptcha/api.js"
-        async
-        defer
-      ></script>
+      {RECAPTCHA_SITE_KEY && (
+        <script
+          src="https://www.google.com/recaptcha/api.js"
+          async
+          defer
+        ></script>
+      )}
     </>
   )
 }
 
-export default IndexPage
+export default () => (
+  <Layout>
+    <IndexPage />
+  </Layout>
+)
 
 const Home = () => (
   <Box className={styles.homeContainer} id="home">
@@ -53,21 +69,42 @@ const Home = () => (
       <Typography variant="h5">
         Your Trusted Partner in Tax Solutions
       </Typography>
-      <Typography variant="body1">
+      <Typography variant="body1" className={styles.heroDescription}>
         At Taxmate, we specialize in providing comprehensive tax consultancy
         services tailored to meet the unique needs of individuals, businesses,
-        and organizations. With our expertise and commitment, we aim to help you
-        navigate the complex world of taxes with ease and confidence.
+        and organizations. With our expertise and commitment, we aim to help
+        you navigate the complex world of taxes with ease and confidence.
       </Typography>
+      <Box className={styles.heroActions}>
+        <Button
+          variant="contained"
+          size="large"
+          onClick={() => navigate("/taxCalculator")}
+          sx={{
+            backgroundColor: "#fff",
+            color: "primary.main",
+            "&:hover": { backgroundColor: "#f0f0f0" }
+          }}
+        >
+          Calculate Your Tax
+        </Button>
+        <Button
+          variant="outlined"
+          size="large"
+          onClick={() => navigate("/#contactUs")}
+          sx={{
+            borderColor: "#fff",
+            color: "#fff",
+            "&:hover": { borderColor: "#fff", backgroundColor: "rgba(255,255,255,0.08)" }
+          }}
+        >
+          Contact Us
+        </Button>
+      </Box>
     </Box>
     <Box
       className={styles.imageContainer}
-      sx={{
-        display: {
-          xs: "none",
-          md: "flex"
-        }
-      }}
+      sx={{ display: { xs: "none", md: "flex" } }}
     >
       <StaticImage
         src="../images/image-1.jpg"
@@ -156,11 +193,11 @@ const AboutUs = () => {
                 {image && (
                   <GatsbyImage
                     image={image}
-                    alt={member.name}
+                    alt={`Portrait of ${member.name}`}
                     style={{ borderRadius: "50%", marginBottom: "15px" }}
                     imgStyle={{
                       objectFit: "cover",
-                      objectPosition: "center top"
+                      objectPosition: "center"
                     }}
                   />
                 )}
@@ -175,9 +212,11 @@ const AboutUs = () => {
                 <Typography variant="body2" className={styles.qualification}>
                   {member.qualification}
                 </Typography>
-                <Typography variant="body2" className={styles.description}>
-                  {member.description}
-                </Typography>
+                {member.description && (
+                  <Typography variant="body2" className={styles.description}>
+                    {member.description}
+                  </Typography>
+                )}
               </Paper>
             </Grid>
           )
@@ -187,56 +226,42 @@ const AboutUs = () => {
   )
 }
 
-const Feedback = () => (
-  <Box className={styles.feedbackContainer} id="feedback">
-    <Typography variant="h4" align="center" color="primary" gutterBottom>
-      Clients Feedback
-    </Typography>
-    <Typography variant="h6" align="center" color="textSecondary" gutterBottom>
-      What Our Clients Think About Taxmate
-    </Typography>
-    <Carousel
-      infinite
-      pauseOnHover
-      centerMode
-      autoPlay
-      shouldResetAutoplay={false}
-      responsive={{
-        desktop: {
-          breakpoint: { max: 3000, min: 1024 },
-          items: 2
-        },
-        mobile: {
-          breakpoint: { max: 1024, min: 0 },
-          items: 1
-        }
-      }}
-      sliderClass={styles.slider}
-    >
-      {feedbacks.map((feedback, index) => (
-        <Box key={index} className={styles.feedbackBox}>
-          <img src={feedback.image} alt={feedback.name} />
-          <Typography variant="h6" className={styles.customerName}>
-            {feedback.name}
-          </Typography>
-          <Typography variant="body2" className={styles.customerRole}>
-            {feedback.role}
-          </Typography>
-          <Typography variant="body2" className={styles.feedback}>
-            {feedback.feedback}
-          </Typography>
-        </Box>
-      ))}
-    </Carousel>
-  </Box>
-)
+type FormState = {
+  name: string
+  reply_to: string
+  phone: string
+  message: string
+}
 
 const ContactUs = () => {
   const form = useRef<HTMLFormElement | null>(null)
   const [isSendingEmail, setIsSendingEmail] = useState(false)
+  const [values, setValues] = useState<FormState>({
+    name: "",
+    reply_to: "",
+    phone: "",
+    message: ""
+  })
+  const [errors, setErrors] = useState<Partial<FormState>>({})
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+  const validate = (): boolean => {
+    const next: Partial<FormState> = {}
+    if (!values.name.trim()) next.name = "Name is required"
+    if (!values.reply_to.trim())
+      next.reply_to = "Email is required"
+    else if (!emailRegex.test(values.reply_to))
+      next.reply_to = "Enter a valid email address"
+    if (!values.phone.trim()) next.phone = "Phone is required"
+    if (!values.message.trim()) next.message = "Message is required"
+    setErrors(next)
+    return Object.keys(next).length === 0
+  }
 
   const sendEmail = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    if (!validate()) return
 
     if (form.current) {
       setIsSendingEmail(true)
@@ -250,6 +275,7 @@ const ContactUs = () => {
         .then(() => {
           toast.success("Message successfully sent!")
           form.current?.reset()
+          setValues({ name: "", reply_to: "", phone: "", message: "" })
         })
         .catch((err) => {
           console.log(`Error occurred in sending email`, err)
@@ -270,19 +296,15 @@ const ContactUs = () => {
         sx={{
           display: "flex",
           gap: "10px",
-          flexDirection: {
-            xs: "column",
-            md: "row"
-          }
+          flexDirection: { xs: "column", md: "row" }
         }}
       >
         <Box
           ref={form}
           component="form"
-          method="post"
-          action=""
           onSubmit={sendEmail}
           className={styles.contactForm}
+          noValidate
         >
           <TextField
             label="Name"
@@ -291,6 +313,10 @@ const ContactUs = () => {
             fullWidth
             required
             margin="normal"
+            value={values.name}
+            onChange={(e) => setValues((v) => ({ ...v, name: e.target.value }))}
+            error={!!errors.name}
+            helperText={errors.name}
           />
           <TextField
             label="Email"
@@ -300,6 +326,12 @@ const ContactUs = () => {
             required
             margin="normal"
             type="email"
+            value={values.reply_to}
+            onChange={(e) =>
+              setValues((v) => ({ ...v, reply_to: e.target.value }))
+            }
+            error={!!errors.reply_to}
+            helperText={errors.reply_to}
           />
           <TextField
             label="Phone"
@@ -308,6 +340,10 @@ const ContactUs = () => {
             fullWidth
             required
             margin="normal"
+            value={values.phone}
+            onChange={(e) => setValues((v) => ({ ...v, phone: e.target.value }))}
+            error={!!errors.phone}
+            helperText={errors.phone}
           />
           <TextField
             label="Message"
@@ -318,69 +354,34 @@ const ContactUs = () => {
             margin="normal"
             multiline
             rows={4}
+            value={values.message}
+            onChange={(e) =>
+              setValues((v) => ({ ...v, message: e.target.value }))
+            }
+            error={!!errors.message}
+            helperText={errors.message}
           />
-          <div
-            className="g-recaptcha"
-            data-sitekey="6LfhbvwpAAAAABfVn96TUjhxw9wMfdDIXxw8SbEw"
-          ></div>
+          {RECAPTCHA_SITE_KEY && (
+            <div
+              className="g-recaptcha"
+              data-sitekey={RECAPTCHA_SITE_KEY}
+            ></div>
+          )}
           <LoadingButton
             type="submit"
             variant="contained"
             color="primary"
             loading={isSendingEmail}
+            sx={{ mt: 2 }}
           >
             Send Message
           </LoadingButton>
         </Box>
-        <Map />
+        <Suspense fallback={<Box sx={{ flex: 1, minHeight: 485 }} />}>
+          <Map />
+        </Suspense>
       </Box>
     </Box>
-  )
-}
-
-const containerStyle = {
-  width: "100%",
-  minHeight: "485px",
-  flex: 1
-}
-
-const taxmateCord = {
-  lat: 31.622685,
-  lng: 71.059266
-}
-
-const Map = () => {
-  const { isLoaded } = useJsApiLoader({
-    id: "google-map-script",
-    googleMapsApiKey: process.env.GATSBY_GOOGLE_MAP_API_KEY as string
-  })
-
-  const [_, setMap] = useState<google.maps.Map | null>(null)
-
-  const onLoad = useCallback((map: google.maps.Map) => {
-    // This is just an example of getting and using the map instance!!! don't just blindly copy!
-    const bounds = new window.google.maps.LatLngBounds(taxmateCord)
-    map.fitBounds(bounds)
-
-    setMap(map)
-  }, [])
-
-  const onUnmount = useCallback(() => {
-    setMap(null)
-  }, [])
-
-  if (!isLoaded) return null
-
-  return (
-    <GoogleMap
-      mapContainerStyle={containerStyle}
-      center={taxmateCord}
-      zoom={14}
-      onLoad={onLoad}
-      onUnmount={onUnmount}
-    >
-      <Marker position={taxmateCord} />
-    </GoogleMap>
   )
 }
 
@@ -392,8 +393,8 @@ const query = graphql`
           relativePath
           childImageSharp {
             gatsbyImageData(
-              width: 100
-              height: 100
+              width: 200
+              height: 200
               placeholder: BLURRED
               layout: FIXED
             )

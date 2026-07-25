@@ -1,49 +1,58 @@
-<p align="center">
-  <a href="https://www.gatsbyjs.com/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter-ts">
-    <img alt="Gatsby" src="https://www.gatsbyjs.com/Gatsby-Monogram.svg" width="60" />
-  </a>
-</p>
-<h1 align="center">
-  Gatsby Minimal TypeScript Starter
-</h1>
+# Taxmate
 
-## 🚀 Quick start
+Taxmate is a Gatsby-based website for a Pakistan tax consultancy firm. It
+provides information about the firm's services, an income-tax calculator, a
+Punjab property-transfer-fee calculator, and a tax-news feed.
 
-1.  **Create a Gatsby site.**
+## Features
 
-    Use the Gatsby CLI to create a new site, specifying the minimal TypeScript starter.
+- **Home** — hero with calls-to-action, services, tools, team, testimonials,
+  and a contact form (EmailJS) with an embedded Google Map.
+- **Tax Calculator** — Pakistan income tax and reverse (income-from-tax)
+  calculators across multiple tax years (2020–2026).
+- **Property Transfer Fees** — Punjab residential/commercial and agricultural
+  transfer-fee calculators (registration, stamp duty, PLRA, advance/gain tax,
+  7E, etc.).
+- **News** — searchable, filterable feed of tax updates and deadlines.
+- Responsive layout, MUI v5 (CSS variables theme) with light/dark palettes,
+  accessible navigation, WhatsApp floating button, and a site footer.
 
-    ```shell
-    # create a new Gatsby site using the minimal TypeScript starter
-    npm init gatsby -- -ts
-    ```
+## Tech stack
 
-2.  **Start developing.**
+- [Gatsby](https://www.gatsbyjs.com/) 5 (TypeScript)
+- [MUI](https://mui.com/) v5 (`experimental_extendTheme`, CSS variables)
+- SCSS modules for page-level styling
+- EmailJS for the contact form
+- `@react-google-maps/api` for the office map (lazy-loaded)
 
-    Navigate into your new site’s directory and start it up.
+## Quick start
 
-    ```shell
-    cd my-gatsby-site/
-    npm run develop
-    ```
+```shell
+npm install
+npm run develop
+```
 
-3.  **Open the code and start customizing!**
+The site is now running at http://localhost:8000.
 
-    Your site is now running at http://localhost:8000!
+## Available scripts
 
-    Edit `src/pages/index.tsx` to see your site update in real-time!
+- `npm run develop` — start the dev server
+- `npm run build` — production build
+- `npm run serve` — serve the production build locally
+- `npm run clean` — clear the Gatsby cache
+- `npm run typecheck` — run `tsc --noEmit`
 
-4.  **Learn more**
+## Environment variables
 
-    - [Documentation](https://www.gatsbyjs.com/docs/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter-ts)
-    - [Tutorials](https://www.gatsbyjs.com/docs/tutorial/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter-ts)
-    - [Guides](https://www.gatsbyjs.com/docs/how-to/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter-ts)
-    - [API Reference](https://www.gatsbyjs.com/docs/api-reference/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter-ts)
-    - [Plugin Library](https://www.gatsbyjs.com/plugins?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter-ts)
-    - [Cheat Sheet](https://www.gatsbyjs.com/docs/cheat-sheet/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter-ts)
+Copy `.env.example` (or create `.env`) and fill in:
 
-## 🚀 Quick start (Netlify)
+- `GATSBY_EMAIL_SERVICE_ID` — EmailJS service id
+- `GATSBY_EMAIL_TEMPLATE_ID` — EmailJS template id
+- `GATSBY_EMAIL_ACCOUNT_ID` — EmailJS account/public key
+- `GATSBY_GOOGLE_MAP_API_KEY` — Google Maps JS API key
+- `GATSBY_RECAPTCHA_SITE_KEY` — reCAPTCHA v2 site key (optional; if omitted the
+  captcha widget is not rendered)
 
-Deploy this starter with one click on [Netlify](https://app.netlify.com/signup):
+## License
 
-[<img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" />](https://app.netlify.com/start/deploy?repository=https://github.com/gatsbyjs/gatsby-starter-minimal-ts)
+© Taxmate. All rights reserved.

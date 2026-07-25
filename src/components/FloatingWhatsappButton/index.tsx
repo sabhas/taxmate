@@ -12,20 +12,22 @@ export const WhatsAppFloatingButton = ({
   message = ""
 }: Props) => {
   const handleClick = () => {
-    // Create WhatsApp link
     let whatsappUrl = `https://wa.me/${phoneNumber}`
 
-    // Add message parameter if provided
     if (message) {
       whatsappUrl += `?text=${encodeURIComponent(message)}`
     }
 
-    // Open WhatsApp in new tab
-    window.open(whatsappUrl, "_blank")
+    window.open(whatsappUrl, "_blank", "noopener,noreferrer")
   }
 
   return (
-    <button className={styles.whatsappFloatingButton} onClick={handleClick}>
+    <button
+      type="button"
+      className={styles.whatsappFloatingButton}
+      onClick={handleClick}
+      aria-label="Chat with us on WhatsApp"
+    >
       <WhatsAppIcon />
     </button>
   )

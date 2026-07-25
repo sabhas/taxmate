@@ -1,29 +1,33 @@
 import { TabContext, TabPanel } from "@mui/lab"
 import {
   Box,
-  Button,
-  InputAdornment,
   MenuItem,
-  Paper,
   Tab,
   Tabs,
-  TextField,
-  Typography
+  TextField
 } from "@mui/material"
 import {
   AccountBalance,
-  ArrowForward,
-  Calculate,
   Cottage,
   Grass,
   Home,
   Landscape,
-  Receipt,
-  RestartAlt
+  Receipt
 } from "@mui/icons-material"
-import React, { useEffect, useState } from "react"
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react"
 import Layout from "../layout"
-import * as styles from "../scss/propertyTransferFees.module.scss"
+import {
+  AmountInput,
+  ButtonRow,
+  CalculateButton,
+  FormSection,
+  PageShell,
+  ResetButton,
+  ResultSection,
+  TabsCard,
+  TabsHeader,
+  tabSx
+} from "../components/Calculator"
 import {
   AgriculturalInput,
   FeeResult,
@@ -44,6 +48,8 @@ export const Head = () => (
   </>
 )
 
+const panelSx = { padding: { xs: "24px 16px", sm: "32px 28px" } } as const
+
 export default () => {
   const [tabValue, setTabValue] = useState<"Residential" | "Agricultural">(
     "Residential"
@@ -51,68 +57,187 @@ export default () => {
 
   return (
     <Layout>
-      <Box className={styles.pageWrapper}>
-        <Box className={styles.container}>
-          <Box className={styles.heroSection}>
-            <Typography variant="h4" className={styles.title}>
-              Property Transfer Fee Calculator
-            </Typography>
-            <Typography className={styles.subtitle}>
-              Calculate Punjab property transfer fees for both residential and agricultural land
-            </Typography>
-          </Box>
+      <PageShell
+        title="Property Transfer Fee Calculator"
+        subtitle="Calculate Punjab property transfer fees for both residential and agricultural land"
+      >
+        <TabsCard>
+          <TabContext value={tabValue}>
+            <TabsHeader>
+              <Tabs
+                variant="fullWidth"
+                value={tabValue}
+                onChange={(_, value) => setTabValue(value)}
+                TabIndicatorProps={{ style: { display: "none" } }}
+              >
+                <Tab
+                  icon={<Home fontSize="small" />}
+                  iconPosition="start"
+                  label="Residential / Commercial"
+                  value="Residential"
+                  sx={tabSx.root}
+                />
+                <Tab
+                  icon={<Grass fontSize="small" />}
+                  iconPosition="start"
+                  label="Agricultural Land"
+                  value="Agricultural"
+                  sx={tabSx.root}
+                />
+              </Tabs>
+            </TabsHeader>
 
-          <Paper className={styles.tabsCard} elevation={0}>
-            <TabContext value={tabValue}>
-              <Box className={styles.tabsHeader}>
-                <Tabs
-                  variant="fullWidth"
-                  value={tabValue}
-                  onChange={(_, value) => setTabValue(value)}
-                  classes={{ indicator: styles.tabIndicator }}
-                >
-                  <Tab
-                    icon={<Home fontSize="small" />}
-                    iconPosition="start"
-                    label="Residential / Commercial"
-                    value="Residential"
-                    classes={{
-                      root: styles.tabRoot,
-                      selected: styles.tabSelected
-                    }}
-                  />
-                  <Tab
-                    icon={<Grass fontSize="small" />}
-                    iconPosition="start"
-                    label="Agricultural Land"
-                    value="Agricultural"
-                    classes={{
-                      root: styles.tabRoot,
-                      selected: styles.tabSelected
-                    }}
-                  />
-                </Tabs>
-              </Box>
-
-              <TabPanel value="Residential" className={styles.panelContent}>
-                <ResidentialCalculator />
-              </TabPanel>
-              <TabPanel value="Agricultural" className={styles.panelContent}>
-                <AgriculturalCalculator />
-              </TabPanel>
-            </TabContext>
-          </Paper>
-        </Box>
-      </Box>
+            <TabPanel value="Residential" sx={panelSx}>
+              <ResidentialCalculator />
+            </TabPanel>
+            <TabPanel value="Agricultural" sx={panelSx}>
+              <AgriculturalCalculator />
+            </TabPanel>
+          </TabContext>
+        </TabsCard>
+      </PageShell>
     </Layout>
   )
 }
 
-const formatNumber = (value: number) =>
-  new Intl.NumberFormat().format(Math.round(value * 100) / 100)
+type MeasurementFieldsProps = {
+  kanal: number
+  marla: number
+  sarsahi: number
+  sqFeet: number
+  setKanal: Dispatch<SetStateAction<number>>
+  setMarla: Dispatch<SetStateAction<number>>
+  setSarsahi: Dispatch<SetStateAction<number>>
+  setSqFeet: Dispatch<SetStateAction<number>>
+}
 
-const unformatNumber = (value: string) =>
-  parseFloat(value.replace(/,/g, "")) || 0
+const MeasurementFields = ({
+  kanal,
+  marla,
+  sarsahi,
+  sqFeet,
+  setKanal,
+  setMarla,
+  setSarsahi,
+  setSqFeet
+}: MeasurementFieldsProps) => (
+  <>
+    <AmountInput label="Kanal" value={kanal} onChange={setKanal} noPrefix />
+    <AmountInput label="Marla" value={marla} onChange={setMarla} noPrefix />
+    <AmountInput
+      label="Sarsahi"
+      value={sarsahi}
+      onChange={setSarsahi}
+      noPrefix
+    />
+    <AmountInput
+      label="Square Feet"
+      value={sqFeet}
+      onChange={setSqFeet}
+      noPrefix
+    />
+  </>
+)
+
+type TaxStatusFieldsProps = {
+  purchaserTaxStatus: TaxFilerStatus
+  sellerTaxStatus: TaxFilerStatus
+  propertyStatus: PropertyStatus
+  setPurchaserTaxStatus: Dispatch<SetStateAction<TaxFilerStatus>>
+  setSellerTaxStatus: Dispatch<SetStateAction<TaxFilerStatus>>
+  setPropertyStatus: Dispatch<SetStateAction<PropertyStatus>>
+  mapApprovalStatus?: MapApprovalStatus
+  setMapApprovalStatus?: Dispatch<SetStateAction<MapApprovalStatus>>
+  showMapApproval?: boolean
+}
+
+const TaxStatusFields = ({
+  purchaserTaxStatus,
+  sellerTaxStatus,
+  propertyStatus,
+  setPurchaserTaxStatus,
+  setSellerTaxStatus,
+  setPropertyStatus,
+  mapApprovalStatus,
+  setMapApprovalStatus,
+  showMapApproval
+}: TaxStatusFieldsProps) => (
+  <>
+    <TextField
+      select
+      fullWidth
+      label="Purchaser Tax Status"
+      value={purchaserTaxStatus}
+      onChange={(e) =>
+        setPurchaserTaxStatus(e.target.value as TaxFilerStatus)
+      }
+    >
+      <MenuItem value="Non-Filer">Non-Filer (10.5%)</MenuItem>
+      <MenuItem value="Late Filer">Late Filer (4.5%)</MenuItem>
+      <MenuItem value="Filer">Filer (1.5%)</MenuItem>
+    </TextField>
+    <TextField
+      select
+      fullWidth
+      label="Seller Tax Status"
+      value={sellerTaxStatus}
+      onChange={(e) => setSellerTaxStatus(e.target.value as TaxFilerStatus)}
+    >
+      <MenuItem value="Non-Filer">Non-Filer (11.5%)</MenuItem>
+      <MenuItem value="Late Filer">Late Filer (7.5%)</MenuItem>
+      <MenuItem value="Filer">Filer (4.5%)</MenuItem>
+    </TextField>
+    <TextField
+      select
+      fullWidth
+      label="Property Status"
+      value={propertyStatus}
+      onChange={(e) =>
+        setPropertyStatus(e.target.value as PropertyStatus)
+      }
+    >
+      <MenuItem value="Not Declared">Not Declared</MenuItem>
+      <MenuItem value="Declared">Declared</MenuItem>
+    </TextField>
+    {showMapApproval && setMapApprovalStatus && mapApprovalStatus && (
+      <TextField
+        select
+        fullWidth
+        label="Map Approval Status"
+        value={mapApprovalStatus}
+        onChange={(e) =>
+          setMapApprovalStatus(e.target.value as MapApprovalStatus)
+        }
+      >
+        <MenuItem value="Not Approved">Not Approved</MenuItem>
+        <MenuItem value="Approved">Approved</MenuItem>
+      </TextField>
+    )}
+  </>
+)
+
+const buildFeeRows = (
+  fees: FeeResult,
+  locationType: LocationType,
+  includeMapFee: boolean
+) => [
+  { label: "Registration Fee", value: fees.registrationFee },
+  { label: "Estamp Duty", value: fees.estampDuty },
+  { label: "Others (BOR Service Charges)", value: fees.borServiceCharges },
+  { label: "PLRA", value: fees.plra },
+  { label: "Mutation Fee", value: fees.mutationFee },
+  {
+    label: locationType === "Rural" ? "District Council" : "Tehsil Council",
+    value: fees.tehsilCouncil
+  },
+  ...(includeMapFee
+    ? [{ label: "Map Fee", value: fees.mapFee }]
+    : []),
+  { label: "Advance Tax 236K", value: fees.advanceTax236K },
+  { label: "Gain Tax 236C", value: fees.gainTax236C },
+  { label: "7E Tax", value: fees.tax7E },
+  { label: "TOTAL FEES", value: fees.totalFees, isTotal: true }
+]
 
 const ResidentialCalculator = () => {
   const [locationType, setLocationType] = useState<LocationType>("Urban")
@@ -173,349 +298,110 @@ const ResidentialCalculator = () => {
   }
 
   return (
-    <>
-      <Box className={styles.formSection}>
-        <Typography className={styles.sectionLabel}>
-          <Landscape className={styles.sectionIcon} />
-          Property Location
-        </Typography>
-        <Box className={styles.fieldsGrid}>
-          <TextField
-            select
-            fullWidth
-            label="Location Type"
-            value={locationType}
-            onChange={(e) => setLocationType(e.target.value as LocationType)}
-            className={styles.styledInput}
-          >
-            <MenuItem value="Urban">Urban</MenuItem>
-            <MenuItem value="Rural">Rural</MenuItem>
-          </TextField>
-        </Box>
-      </Box>
-
-      <Box className={styles.formSection}>
-        <Typography className={styles.sectionLabel}>
-          <AccountBalance className={styles.sectionIcon} />
-          Property Rates
-        </Typography>
-        <Box className={styles.fieldsGrid}>
-          <TextField
-            fullWidth
-            label="DC Rate Per Marla"
-            type="text"
-            value={dcRatePerMarla ? formatNumber(dcRatePerMarla) : ""}
-            onChange={(e) => setDcRatePerMarla(unformatNumber(e.target.value))}
-            className={styles.styledInput}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <span className={styles.inputPrefix}>Rs</span>
-                </InputAdornment>
-              )
-            }}
-          />
-          <TextField
-            fullWidth
-            label="DC Sq. Feet Rate (If Constructed)"
-            type="text"
-            value={dcSqftRate ? formatNumber(dcSqftRate) : ""}
-            onChange={(e) => setDcSqftRate(unformatNumber(e.target.value))}
-            className={styles.styledInput}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <span className={styles.inputPrefix}>Rs</span>
-                </InputAdornment>
-              )
-            }}
-          />
-        </Box>
-      </Box>
-
-      <Box className={styles.formSection}>
-        <Typography className={styles.sectionLabel}>
-          <Cottage className={styles.sectionIcon} />
-          Property Details
-        </Typography>
-        <Box className={styles.fieldsGrid}>
-          <TextField
-            fullWidth
-            label="Kanal"
-            type="text"
-            value={kanal || ""}
-            onChange={(e) => setKanal(parseFloat(e.target.value) || 0)}
-            className={styles.styledInput}
-          />
-          <TextField
-            fullWidth
-            label="Marla"
-            type="text"
-            value={marla || ""}
-            onChange={(e) => setMarla(parseFloat(e.target.value) || 0)}
-            className={styles.styledInput}
-          />
-          <TextField
-            fullWidth
-            label="Sarsahi"
-            type="text"
-            value={sarsahi || ""}
-            onChange={(e) => setSarsahi(parseFloat(e.target.value) || 0)}
-            className={styles.styledInput}
-          />
-          <TextField
-            fullWidth
-            label="Square Feet"
-            type="text"
-            value={sqFeet || ""}
-            onChange={(e) => setSqFeet(parseFloat(e.target.value) || 0)}
-            className={styles.styledInput}
-          />
-        </Box>
-      </Box>
-
-      <Box className={styles.formSection}>
-        <Typography className={styles.sectionLabel}>
-          <Receipt className={styles.sectionIcon} />
-          Tax Status
-        </Typography>
-        <Box className={styles.fieldsGrid}>
-          <TextField
-            select
-            fullWidth
-            label="Purchaser Tax Status"
-            value={purchaserTaxStatus}
-            onChange={(e) =>
-              setPurchaserTaxStatus(e.target.value as TaxFilerStatus)
-            }
-            className={styles.styledInput}
-          >
-            <MenuItem value="Non-Filer">Non-Filer (10.5%)</MenuItem>
-            <MenuItem value="Late Filer">Late Filer (4.5%)</MenuItem>
-            <MenuItem value="Filer">Filer (1.5%)</MenuItem>
-          </TextField>
-          <TextField
-            select
-            fullWidth
-            label="Seller Tax Status"
-            value={sellerTaxStatus}
-            onChange={(e) =>
-              setSellerTaxStatus(e.target.value as TaxFilerStatus)
-            }
-            className={styles.styledInput}
-          >
-            <MenuItem value="Non-Filer">Non-Filer (11.5%)</MenuItem>
-            <MenuItem value="Late Filer">Late Filer (7.5%)</MenuItem>
-            <MenuItem value="Filer">Filer (4.5%)</MenuItem>
-          </TextField>
-          <TextField
-            select
-            fullWidth
-            label="Property Status"
-            value={propertyStatus}
-            onChange={(e) =>
-              setPropertyStatus(e.target.value as PropertyStatus)
-            }
-            className={styles.styledInput}
-          >
-            <MenuItem value="Not Declared">Not Declared</MenuItem>
-            <MenuItem value="Declared">Declared</MenuItem>
-          </TextField>
-          {dcSqftRate > 0 && (
-            <TextField
-              select
-              fullWidth
-              label="Map Approval Status"
-              value={mapApprovalStatus}
-              onChange={(e) =>
-                setMapApprovalStatus(e.target.value as MapApprovalStatus)
-              }
-              className={styles.styledInput}
-            >
-              <MenuItem value="Not Approved">Not Approved</MenuItem>
-              <MenuItem value="Approved">Approved</MenuItem>
-            </TextField>
-          )}
-        </Box>
-      </Box>
-
-      <Box className={styles.buttonGroup}>
-        <Button
-          variant="contained"
-          className={styles.calculateBtn}
-          onClick={handleCalculate}
-          endIcon={<ArrowForward />}
-          disableElevation
+    <Box
+      component="form"
+      onSubmit={(e: React.FormEvent) => {
+        e.preventDefault()
+        handleCalculate()
+      }}
+    >
+      <FormSection label="Property Location" icon={<Landscape />}>
+        <TextField
+          select
+          fullWidth
+          label="Location Type"
+          value={locationType}
+          onChange={(e) => setLocationType(e.target.value as LocationType)}
         >
-          Calculate Fees
-        </Button>
-        {hasCalculated && (
-          <Button
-            variant="text"
-            className={styles.resetBtn}
-            onClick={handleReset}
-            startIcon={<RestartAlt />}
-          >
-            Reset
-          </Button>
-        )}
-      </Box>
+          <MenuItem value="Urban">Urban</MenuItem>
+          <MenuItem value="Rural">Rural</MenuItem>
+        </TextField>
+      </FormSection>
+
+      <FormSection label="Property Rates" icon={<AccountBalance />}>
+        <AmountInput
+          label="DC Rate Per Marla"
+          value={dcRatePerMarla}
+          onChange={setDcRatePerMarla}
+        />
+        <AmountInput
+          label="DC Sq. Feet Rate (If Constructed)"
+          value={dcSqftRate}
+          onChange={setDcSqftRate}
+        />
+      </FormSection>
+
+      <FormSection label="Property Details" icon={<Cottage />}>
+        <MeasurementFields
+          kanal={kanal}
+          marla={marla}
+          sarsahi={sarsahi}
+          sqFeet={sqFeet}
+          setKanal={setKanal}
+          setMarla={setMarla}
+          setSarsahi={setSarsahi}
+          setSqFeet={setSqFeet}
+        />
+      </FormSection>
+
+      <FormSection label="Tax Status" icon={<Receipt />}>
+        <TaxStatusFields
+          purchaserTaxStatus={purchaserTaxStatus}
+          sellerTaxStatus={sellerTaxStatus}
+          propertyStatus={propertyStatus}
+          setPurchaserTaxStatus={setPurchaserTaxStatus}
+          setSellerTaxStatus={setSellerTaxStatus}
+          setPropertyStatus={setPropertyStatus}
+          mapApprovalStatus={mapApprovalStatus}
+          setMapApprovalStatus={setMapApprovalStatus}
+          showMapApproval={dcSqftRate > 0}
+        />
+      </FormSection>
+
+      <ButtonRow>
+        <CalculateButton onClick={handleCalculate} label="Calculate Fees" />
+        {hasCalculated && <ResetButton onClick={handleReset} />}
+      </ButtonRow>
 
       {hasCalculated && fees && (
-        <Box className={styles.resultsSection}>
-          <Box className={styles.resultsHeader}>
-            <Box className={styles.resultsIcon}>
-              <Calculate fontSize="small" />
-            </Box>
-            <Typography className={styles.resultsTitle}>
-              Valuation Details
-            </Typography>
-          </Box>
-
-          <Paper className={styles.resultsCard} elevation={0}>
-            <Box className={styles.resultRow}>
-              <Typography className={styles.resultLabel}>
-                Total Land Value
-              </Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(valuation.totalLandValue)}
-              </Typography>
-            </Box>
-            <Box className={styles.resultRow}>
-              <Typography className={styles.resultLabel}>
-                Total Construction Value
-              </Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(valuation.totalConstructionValue)}
-              </Typography>
-            </Box>
-            <Box className={`${styles.resultRow} ${styles.totalRow}`}>
-              <Typography className={styles.resultLabel}>
-                Total Property Value
-              </Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(valuation.totalPropertyValue)}
-              </Typography>
-            </Box>
-          </Paper>
-
-          <Box className={styles.resultsHeader} style={{ marginTop: 24 }}>
-            <Box className={styles.resultsIcon}>
-              <Receipt fontSize="small" />
-            </Box>
-            <Typography className={styles.resultsTitle}>Fee Details</Typography>
-          </Box>
-
-          <Paper className={styles.resultsCard} elevation={0}>
-            <Box className={styles.resultRow}>
-              <Typography className={styles.resultLabel}>
-                Registration Fee
-              </Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(fees.registrationFee)}
-              </Typography>
-            </Box>
-            <Box className={styles.resultRow}>
-              <Typography className={styles.resultLabel}>
-                Estamp Duty
-              </Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(fees.estampDuty)}
-              </Typography>
-            </Box>
-            <Box className={styles.resultRow}>
-              <Typography className={styles.resultLabel}>
-                Others (BOR Service Charges)
-              </Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(fees.borServiceCharges)}
-              </Typography>
-            </Box>
-            <Box className={styles.resultRow}>
-              <Typography className={styles.resultLabel}>PLRA</Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(fees.plra)}
-              </Typography>
-            </Box>
-            <Box className={styles.resultRow}>
-              <Typography className={styles.resultLabel}>
-                Mutation Fee
-              </Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(fees.mutationFee)}
-              </Typography>
-            </Box>
-            <Box className={styles.resultRow}>
-              <Typography className={styles.resultLabel}>
-                {locationType === "Rural" ? "District Council" : "Tehsil Council"}
-              </Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(fees.tehsilCouncil)}
-              </Typography>
-            </Box>
-            {dcSqftRate > 0 && (
-              <Box className={styles.resultRow}>
-                <Typography className={styles.resultLabel}>Map Fee</Typography>
-                <Typography className={styles.resultValue}>
-                  Rs {formatNumber(fees.mapFee)}
-                </Typography>
-              </Box>
-            )}
-            <Box className={styles.resultRow}>
-              <Typography className={styles.resultLabel}>
-                Advance Tax 236K
-              </Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(fees.advanceTax236K)}
-              </Typography>
-            </Box>
-            <Box className={styles.resultRow}>
-              <Typography className={styles.resultLabel}>
-                Gain Tax 236C
-              </Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(fees.gainTax236C)}
-              </Typography>
-            </Box>
-            <Box className={styles.resultRow}>
-              <Typography className={styles.resultLabel}>7E Tax</Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(fees.tax7E)}
-              </Typography>
-            </Box>
-            <Box className={`${styles.resultRow} ${styles.totalRow}`}>
-              <Typography className={styles.resultLabel}>TOTAL FEES</Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(fees.totalFees)}
-              </Typography>
-            </Box>
-          </Paper>
-
-          <Paper
-            className={styles.resultsCard}
-            elevation={0}
-            style={{ marginTop: 16 }}
-          >
-            <Box className={styles.resultRow}>
-              <Typography className={styles.resultLabel}>
-                Hibba/Gift Total Fee
-              </Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(fees.hibbaGiftTotalFee)}
-              </Typography>
-            </Box>
-            <Box className={styles.resultRow}>
-              <Typography className={styles.resultLabel}>
-                Tamleek Total Fee
-              </Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(fees.tamleekTotalFee)}
-              </Typography>
-            </Box>
-          </Paper>
-        </Box>
+        <>
+          <ResultSection
+            title="Valuation Details"
+            rows={[
+              { label: "Total Land Value", value: valuation.totalLandValue },
+              {
+                label: "Total Construction Value",
+                value: valuation.totalConstructionValue
+              },
+              {
+                label: "Total Property Value",
+                value: valuation.totalPropertyValue,
+                isTotal: true
+              }
+            ]}
+          />
+          <ResultSection
+            title="Fee Details"
+            rows={buildFeeRows(fees, locationType, dcSqftRate > 0)}
+          />
+          <ResultSection
+            title="Variant Fees"
+            rows={[
+              {
+                label: "Hibba/Gift Total Fee",
+                value: fees.hibbaGiftTotalFee
+              },
+              {
+                label: "Tamleek Total Fee",
+                value: fees.tamleekTotalFee
+              }
+            ]}
+            marginTop={16}
+          />
+        </>
       )}
-    </>
+      <button type="submit" style={{ display: "none" }} aria-hidden="true" />
+    </Box>
   )
 }
 
@@ -569,294 +455,96 @@ const AgriculturalCalculator = () => {
   }
 
   return (
-    <>
-      <Box className={styles.formSection}>
-        <Typography className={styles.sectionLabel}>
-          <Landscape className={styles.sectionIcon} />
-          Property Location
-        </Typography>
-        <Box className={styles.fieldsGrid}>
-          <TextField
-            select
-            fullWidth
-            label="Location Type"
-            value={locationType}
-            onChange={(e) => setLocationType(e.target.value as LocationType)}
-            className={styles.styledInput}
-          >
-            <MenuItem value="Rural">Rural</MenuItem>
-            <MenuItem value="Urban">Urban</MenuItem>
-          </TextField>
-        </Box>
-      </Box>
-
-      <Box className={styles.formSection}>
-        <Typography className={styles.sectionLabel}>
-          <AccountBalance className={styles.sectionIcon} />
-          Property Rates
-        </Typography>
-        <Box className={styles.fieldsGrid}>
-          <TextField
-            fullWidth
-            label="DC Rate Per Acre"
-            type="text"
-            value={dcRatePerAcre ? formatNumber(dcRatePerAcre) : ""}
-            onChange={(e) => setDcRatePerAcre(unformatNumber(e.target.value))}
-            className={styles.styledInput}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <span className={styles.inputPrefix}>Rs</span>
-                </InputAdornment>
-              )
-            }}
-          />
-        </Box>
-      </Box>
-
-      <Box className={styles.formSection}>
-        <Typography className={styles.sectionLabel}>
-          <Grass className={styles.sectionIcon} />
-          Property Details
-        </Typography>
-        <Box className={styles.fieldsGrid}>
-          <TextField
-            fullWidth
-            label="Kanal"
-            type="text"
-            value={kanal || ""}
-            onChange={(e) => setKanal(parseFloat(e.target.value) || 0)}
-            className={styles.styledInput}
-          />
-          <TextField
-            fullWidth
-            label="Marla"
-            type="text"
-            value={marla || ""}
-            onChange={(e) => setMarla(parseFloat(e.target.value) || 0)}
-            className={styles.styledInput}
-          />
-          <TextField
-            fullWidth
-            label="Sarsahi"
-            type="text"
-            value={sarsahi || ""}
-            onChange={(e) => setSarsahi(parseFloat(e.target.value) || 0)}
-            className={styles.styledInput}
-          />
-          <TextField
-            fullWidth
-            label="Square Feet"
-            type="text"
-            value={sqFeet || ""}
-            onChange={(e) => setSqFeet(parseFloat(e.target.value) || 0)}
-            className={styles.styledInput}
-          />
-        </Box>
-      </Box>
-
-      <Box className={styles.formSection}>
-        <Typography className={styles.sectionLabel}>
-          <Receipt className={styles.sectionIcon} />
-          Tax Status
-        </Typography>
-        <Box className={styles.fieldsGrid}>
-          <TextField
-            select
-            fullWidth
-            label="Purchaser Tax Status"
-            value={purchaserTaxStatus}
-            onChange={(e) =>
-              setPurchaserTaxStatus(e.target.value as TaxFilerStatus)
-            }
-            className={styles.styledInput}
-          >
-            <MenuItem value="Non-Filer">Non-Filer (10.5%)</MenuItem>
-            <MenuItem value="Late Filer">Late Filer (4.5%)</MenuItem>
-            <MenuItem value="Filer">Filer (1.5%)</MenuItem>
-          </TextField>
-          <TextField
-            select
-            fullWidth
-            label="Seller Tax Status"
-            value={sellerTaxStatus}
-            onChange={(e) =>
-              setSellerTaxStatus(e.target.value as TaxFilerStatus)
-            }
-            className={styles.styledInput}
-          >
-            <MenuItem value="Non-Filer">Non-Filer (11.5%)</MenuItem>
-            <MenuItem value="Late Filer">Late Filer (7.5%)</MenuItem>
-            <MenuItem value="Filer">Filer (4.5%)</MenuItem>
-          </TextField>
-          <TextField
-            select
-            fullWidth
-            label="Property Status"
-            value={propertyStatus}
-            onChange={(e) =>
-              setPropertyStatus(e.target.value as PropertyStatus)
-            }
-            className={styles.styledInput}
-          >
-            <MenuItem value="Not Declared">Not Declared</MenuItem>
-            <MenuItem value="Declared">Declared</MenuItem>
-          </TextField>
-        </Box>
-      </Box>
-
-      <Box className={styles.buttonGroup}>
-        <Button
-          variant="contained"
-          className={styles.calculateBtn}
-          onClick={handleCalculate}
-          endIcon={<ArrowForward />}
-          disableElevation
+    <Box
+      component="form"
+      onSubmit={(e: React.FormEvent) => {
+        e.preventDefault()
+        handleCalculate()
+      }}
+    >
+      <FormSection label="Property Location" icon={<Landscape />}>
+        <TextField
+          select
+          fullWidth
+          label="Location Type"
+          value={locationType}
+          onChange={(e) => setLocationType(e.target.value as LocationType)}
         >
-          Calculate Fees
-        </Button>
-        {hasCalculated && (
-          <Button
-            variant="text"
-            className={styles.resetBtn}
-            onClick={handleReset}
-            startIcon={<RestartAlt />}
-          >
-            Reset
-          </Button>
-        )}
-      </Box>
+          <MenuItem value="Rural">Rural</MenuItem>
+          <MenuItem value="Urban">Urban</MenuItem>
+        </TextField>
+      </FormSection>
+
+      <FormSection label="Property Rates" icon={<AccountBalance />}>
+        <AmountInput
+          label="DC Rate Per Acre"
+          value={dcRatePerAcre}
+          onChange={setDcRatePerAcre}
+        />
+      </FormSection>
+
+      <FormSection label="Property Details" icon={<Grass />}>
+        <MeasurementFields
+          kanal={kanal}
+          marla={marla}
+          sarsahi={sarsahi}
+          sqFeet={sqFeet}
+          setKanal={setKanal}
+          setMarla={setMarla}
+          setSarsahi={setSarsahi}
+          setSqFeet={setSqFeet}
+        />
+      </FormSection>
+
+      <FormSection label="Tax Status" icon={<Receipt />}>
+        <TaxStatusFields
+          purchaserTaxStatus={purchaserTaxStatus}
+          sellerTaxStatus={sellerTaxStatus}
+          propertyStatus={propertyStatus}
+          setPurchaserTaxStatus={setPurchaserTaxStatus}
+          setSellerTaxStatus={setSellerTaxStatus}
+          setPropertyStatus={setPropertyStatus}
+        />
+      </FormSection>
+
+      <ButtonRow>
+        <CalculateButton onClick={handleCalculate} label="Calculate Fees" />
+        {hasCalculated && <ResetButton onClick={handleReset} />}
+      </ButtonRow>
 
       {hasCalculated && fees && (
-        <Box className={styles.resultsSection}>
-          <Box className={styles.resultsHeader}>
-            <Box className={styles.resultsIcon}>
-              <Calculate fontSize="small" />
-            </Box>
-            <Typography className={styles.resultsTitle}>
-              Valuation Details
-            </Typography>
-          </Box>
-
-          <Paper className={styles.resultsCard} elevation={0}>
-            <Box className={`${styles.resultRow} ${styles.totalRow}`}>
-              <Typography className={styles.resultLabel}>
-                Total Property Value
-              </Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(totalPropertyValue)}
-              </Typography>
-            </Box>
-          </Paper>
-
-          <Box className={styles.resultsHeader} style={{ marginTop: 24 }}>
-            <Box className={styles.resultsIcon}>
-              <Receipt fontSize="small" />
-            </Box>
-            <Typography className={styles.resultsTitle}>Fee Details</Typography>
-          </Box>
-
-          <Paper className={styles.resultsCard} elevation={0}>
-            <Box className={styles.resultRow}>
-              <Typography className={styles.resultLabel}>
-                Registration Fee
-              </Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(fees.registrationFee)}
-              </Typography>
-            </Box>
-            <Box className={styles.resultRow}>
-              <Typography className={styles.resultLabel}>
-                Estamp Duty
-              </Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(fees.estampDuty)}
-              </Typography>
-            </Box>
-            <Box className={styles.resultRow}>
-              <Typography className={styles.resultLabel}>
-                Others (BOR Service Charges)
-              </Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(fees.borServiceCharges)}
-              </Typography>
-            </Box>
-            <Box className={styles.resultRow}>
-              <Typography className={styles.resultLabel}>PLRA</Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(fees.plra)}
-              </Typography>
-            </Box>
-            <Box className={styles.resultRow}>
-              <Typography className={styles.resultLabel}>
-                Mutation Fee
-              </Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(fees.mutationFee)}
-              </Typography>
-            </Box>
-            <Box className={styles.resultRow}>
-              <Typography className={styles.resultLabel}>
-                {locationType === "Rural" ? "District Council" : "Tehsil Council"}
-              </Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(fees.tehsilCouncil)}
-              </Typography>
-            </Box>
-            <Box className={styles.resultRow}>
-              <Typography className={styles.resultLabel}>
-                Advance Tax 236K
-              </Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(fees.advanceTax236K)}
-              </Typography>
-            </Box>
-            <Box className={styles.resultRow}>
-              <Typography className={styles.resultLabel}>
-                Gain Tax 236C
-              </Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(fees.gainTax236C)}
-              </Typography>
-            </Box>
-            <Box className={styles.resultRow}>
-              <Typography className={styles.resultLabel}>7E Tax</Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(fees.tax7E)}
-              </Typography>
-            </Box>
-            <Box className={`${styles.resultRow} ${styles.totalRow}`}>
-              <Typography className={styles.resultLabel}>TOTAL FEES</Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(fees.totalFees)}
-              </Typography>
-            </Box>
-          </Paper>
-
-          <Paper
-            className={styles.resultsCard}
-            elevation={0}
-            style={{ marginTop: 16 }}
-          >
-            <Box className={styles.resultRow}>
-              <Typography className={styles.resultLabel}>
-                Hibba/Gift Total Fee
-              </Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(fees.hibbaGiftTotalFee)}
-              </Typography>
-            </Box>
-            <Box className={styles.resultRow}>
-              <Typography className={styles.resultLabel}>
-                Tamleek Total Fee
-              </Typography>
-              <Typography className={styles.resultValue}>
-                Rs {formatNumber(fees.tamleekTotalFee)}
-              </Typography>
-            </Box>
-          </Paper>
-        </Box>
+        <>
+          <ResultSection
+            title="Valuation Details"
+            rows={[
+              {
+                label: "Total Property Value",
+                value: totalPropertyValue,
+                isTotal: true
+              }
+            ]}
+          />
+          <ResultSection
+            title="Fee Details"
+            rows={buildFeeRows(fees, locationType, false)}
+          />
+          <ResultSection
+            title="Variant Fees"
+            rows={[
+              {
+                label: "Hibba/Gift Total Fee",
+                value: fees.hibbaGiftTotalFee
+              },
+              {
+                label: "Tamleek Total Fee",
+                value: fees.tamleekTotalFee
+              }
+            ]}
+            marginTop={16}
+          />
+        </>
       )}
-    </>
+      <button type="submit" style={{ display: "none" }} aria-hidden="true" />
+    </Box>
   )
 }

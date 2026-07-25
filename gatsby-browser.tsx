@@ -13,7 +13,7 @@ import "./styles.css"
 export const wrapRootElement: GatsbyBrowser["wrapRootElement"] = ({
   element
 }) => (
-  <CssVarsProvider theme={theme}>
+  <CssVarsProvider theme={theme} defaultMode="system">
     {element}
     <ToastContainer />
   </CssVarsProvider>

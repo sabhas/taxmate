@@ -3,16 +3,25 @@
   align-items: center;
   justify-content: space-between;
   padding: 20px;
-  background-image: linear-gradient(
-    to right,
-    #4caf50,
-    #2196f3
-  ); // Example gradient based on logo colors
-  height: calc(100vh - 100px);
+  background-image: linear-gradient(to right, #4caf50, #2196f3);
+  min-height: calc(100vh - 104px);
+
   .content {
     max-width: 600px;
     color: #fff;
     flex: 1;
+  }
+
+  .heroDescription {
+    margin-top: 16px;
+    line-height: 1.7;
+  }
+
+  .heroActions {
+    margin-top: 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
   }
 
   .imageContainer {
@@ -27,18 +36,15 @@
   .serviceBox {
     padding: 30px 20px;
     text-align: center;
-    background-color: #fff;
+    background-color: var(--mui-palette-background-paper);
+    color: var(--mui-palette-text-primary);
     border-radius: 8px;
     transition: transform 0.3s, box-shadow 0.3s;
 
     &:hover {
       transform: translateY(-10px);
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      background-image: linear-gradient(
-        to right,
-        #4caf50,
-        #2196f3
-      ); // Example gradient based on logo colors
+      background-image: linear-gradient(to right, #4caf50, #2196f3);
       color: #fff;
 
       .description {
@@ -79,7 +85,8 @@
   .toolBox {
     padding: 30px 20px;
     text-align: center;
-    background-color: #fff;
+    background-color: var(--mui-palette-background-paper);
+    color: var(--mui-palette-text-primary);
     border-radius: 8px;
     transition: transform 0.3s, box-shadow 0.3s;
     cursor: pointer;
@@ -128,7 +135,8 @@
   .memberBox {
     padding: 20px;
     text-align: center;
-    background-color: #fff;
+    background-color: var(--mui-palette-background-paper);
+    color: var(--mui-palette-text-primary);
     border-radius: 8px;
     transition: transform 0.3s, box-shadow 0.3s;
     display: flex;
@@ -138,11 +146,7 @@
     &:hover {
       transform: translateY(-10px);
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      background-image: linear-gradient(
-        to right,
-        #4caf50,
-        #2196f3
-      ); // Example gradient based on logo colors
+      background-image: linear-gradient(to right, #4caf50, #2196f3);
       color: #fff;
 
       .description {
@@ -182,61 +186,12 @@
   }
 }
 
-.feedbackContainer {
-  padding: 20px;
-
-  .slider {
-    gap: 15px;
-
-    .feedbackBox {
-      padding: 20px;
-      border-radius: 8px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      background-image: linear-gradient(
-        to right,
-        #4caf50,
-        #2196f3
-      ); // Example gradient based on logo colors
-      color: #fff;
-
-      img {
-        border-radius: 50%;
-        margin-bottom: 15px;
-        width: 60px;
-        height: 60px;
-        object-fit: cover;
-      }
-
-      .customerName {
-        margin-top: 10px;
-        font-weight: bold;
-        font-size: 1.2em;
-      }
-
-      .customerRole {
-        margin-top: 5px;
-        color: #fff;
-        font-size: 0.9em;
-      }
-
-      .feedback {
-        text-align: center;
-        margin-top: 15px;
-        font-size: 0.9em;
-        color: #fff;
-      }
-    }
-  }
-}
-
 .contactUsContainer {
   padding: 20px;
 
   .contactForm {
-    background-color: #fff;
+    background-color: var(--mui-palette-background-paper);
+    color: var(--mui-palette-text-primary);
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
